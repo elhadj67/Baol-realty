@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baol Realty — Réservez votre parcelle à Mboro, Sénégal</title>
+<meta name="description" content="Réservez votre terrain à Mboro, Sénégal. Parcelles de 225m² à moins de 500m de l'océan. 1 500 000 FCFA avec paiement échelonné.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #B8892E;
+    --gold-light: #D4A843;
+    --gold-dark: #96701F;
+    --ocean: #1B6B93;
+    --ocean-deep: #0F4C6B;
+    --ocean-light: #48A9C5;
+    --sand: #F5E6C8;
+    --earth: #3A2A1C;
+    --earth-light: #5A4434;
+    --green-senegal: #00853F;
+    --red-senegal: #E31B23;
+    --yellow-senegal: #FDDA24;
+    --white: #FFFFFF;
+    --bg: #FFFFFF;
+    --bg-alt: #F9F7F2;
+    --text: #2A2A2A;
+    --text-light: #6B6B6B;
+    --text-muted: #9A9A9A;
+    --border: #E8E4DD;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ============ NAV BAR ============ */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(58,42,28,0.95);
+    backdrop-filter: blur(12px);
+    padding: 0.8rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gold-light);
+    text-decoration: none;
+  }
+
+  .topbar-back {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.3s;
+  }
+
+  .topbar-back:hover { color: var(--gold-light); }
+  .topbar-back svg { width: 16px; height: 16px; }
+
+  /* ============ HERO ============ */
+  .hero {
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 20% 80%, rgba(184,137,46,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 30%, rgba(27,107,147,0.06) 0%, transparent 50%),
+      linear-gradient(175deg, var(--earth) 0%, #2C1E12 50%, var(--earth-light) 100%);
+    text-align: center;
+    padding: 6rem 2rem 3.5rem;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--green-senegal), #00a84f);
+    color: white;
+    padding: 0.4rem 1.2rem;
+    border-radius: 50px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.8s ease-out both;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    max-width: 700px;
+    margin-bottom: 1rem;
+    color: var(--white);
+    animation: fadeInUp 0.8s ease-out 0.15s both;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: clamp(0.95rem, 2vw, 1.1rem);
+    font-weight: 300;
+    color: rgba(255,255,255,0.65);
+    max-width: 500px;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+  }
+
+  .hero-details {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeInUp 0.8s ease-out 0.45s both;
+  }
+
+  .hero-detail {
+    text-align: center;
+  }
+
+  .hero-detail-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--gold-light);
+  }
+
+  .hero-detail-label {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 0.1rem;
+  }
+
+  .hero-detail-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(255,255,255,0.1);
+    align-self: center;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 1.2rem;
+    animation: bounce 2s infinite;
+    color: var(--gold);
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    text-decoration: none;
+  }
+
+  .hero-scroll svg { width: 20px; height: 20px; }
+
+  /* ============ SECTION UTILS ============ */
+  section { padding: 4.5rem 2rem; }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.6rem;
+    color: var(--earth);
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--text-light);
+    font-size: 1rem;
+    max-width: 550px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+  }
+
+  .gold-line {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    margin: 0 auto 1.2rem;
+    border-radius: 3px;
+  }
+
+  /* ============ PAYMENT INFO ============ */
+  .payment-section { background: var(--bg-alt); }
+
+  .payment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .payment-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+
+  .payment-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+    border-color: rgba(184,137,46,0.3);
+  }
+
+  .payment-card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .payment-card-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--earth);
+    margin-bottom: 0.2rem;
+  }
+
+  .payment-card-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+  }
+
+  /* ============ RESERVATION ============ */
+  .reservation-section { background: var(--bg); }
+
+  .reservation-wrapper {
+    max-width: 750px;
+    margin: 0 auto;
+  }
+
+  .counter-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 1.8rem 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .counter-item { text-align: center; }
+
+  .counter-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .counter-number.available { color: var(--green-senegal); }
+  .counter-number.reserved { color: var(--gold); }
+  .counter-number.total { color: var(--ocean); }
+
+  .counter-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+  }
+
+  .counter-divider {
+    width: 1px;
+    height: 45px;
+    background: linear-gradient(to bottom, transparent, var(--border), transparent);
+  }
+
+  .progress-wrapper {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .progress-text {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--red-senegal));
+    border-radius: 3px;
+    transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Form card */
+  .form-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 3rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .form-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green-senegal), var(--yellow-senegal), var(--red-senegal));
+  }
+
+  .form-group { margin-bottom: 1.4rem; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold-dark);
+    font-weight: 600;
+    margin-bottom: 0.45rem;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--bg-alt);
+    transition: all 0.3s ease;
+    outline: none;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(184,137,46,0.1);
+    background: var(--white);
+  }
+
+  .form-input::placeholder,
+  .form-textarea::placeholder { color: #bbb; }
+
+  .form-select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 90px;
+  }
+
+  .form-separator {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 1.8rem 0;
+  }
+
+  /* Terrain info in form */
+  .terrain-info-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1.2rem 1.5rem;
+    border: 2px solid rgba(184,137,46,0.2);
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(184,137,46,0.04), rgba(27,107,147,0.04));
+    margin-bottom: 1rem;
+  }
+
+  .terrain-info-item { text-align: center; }
+
+  .terrain-info-value {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--earth);
+  }
+
+  .terrain-info-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+  }
+
+  .terrain-info-divider {
+    width: 1px;
+    height: 35px;
+    background: var(--border);
+  }
+
+  /* Number of parcels */
+  .parcels-selector {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .parcels-btn {
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    background: var(--bg-alt);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--earth);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .parcels-btn:hover {
+    border-color: var(--gold);
+    background: var(--gold);
+    color: var(--white);
+  }
+
+  .parcels-count {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--gold);
+    min-width: 40px;
+    text-align: center;
+  }
+
+  .parcels-total {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 0.3rem;
+  }
+
+  /* Consent */
+  .consent-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .consent-row input[type="checkbox"] {
+    width: auto;
+    margin-top: 3px;
+    accent-color: var(--gold);
+  }
+
+  .consent-row label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    line-height: 1.5;
+    cursor: pointer;
+  }
+
+  .consent-row a {
+    color: var(--gold);
+    text-decoration: underline;
+  }
+
+  /* Submit */
+  .btn-submit {
+    width: 100%;
+    padding: 1.1rem;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: var(--white);
+    border: none;
+    border-radius: 60px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    box-shadow: 0 4px 20px rgba(184,137,46,0.3);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 35px rgba(184,137,46,0.45);
+  }
+
+  .btn-submit:hover::after { left: 100%; }
+
+  .form-note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 1.2rem;
+    line-height: 1.6;
+  }
+
+  /* Success Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1001;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+  }
+
+  .modal-overlay.active {
+    display: flex;
+    animation: fadeInScale 0.3s ease;
+  }
+
+  .modal-box {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 420px;
+    text-align: center;
+    animation: fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .modal-icon {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, var(--green-senegal), #4CAF50);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+  }
+
+  .modal-icon svg { width: 28px; height: 28px; stroke: white; }
+
+  .modal-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--earth);
+    margin-bottom: 0.5rem;
+  }
+
+  .modal-box p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-close {
+    padding: 0.7rem 2rem;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(184,137,46,0.3);
+  }
+
+  .modal-close:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(184,137,46,0.4);
+  }
+
+  /* ============ CTA ============ */
+  .cta-section {
+    background: var(--earth);
+    text-align: center;
+    padding: 5rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(184,137,46,0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 50%, rgba(27,107,147,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+    font-weight: 800;
+    color: var(--white);
+    margin-bottom: 0.8rem;
+    position: relative;
+  }
+
+  .cta-section p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .cta-btns {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 2rem;
+    border-radius: 60px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    color: white;
+    box-shadow: 0 4px 20px rgba(184,137,46,0.3);
+  }
+
+  .btn-gold:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 35px rgba(184,137,46,0.45);
+  }
+
+  .btn-whatsapp {
+    background: #25D366;
+    color: white;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.25);
+  }
+
+  .btn-whatsapp:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 35px rgba(37,211,102,0.4);
+  }
+
+  .btn-whatsapp svg { width: 20px; height: 20px; fill: currentColor; }
+
+  /* ============ FOOTER ============ */
+  .senegal-stripe {
+    height: 4px;
+    background: linear-gradient(90deg, var(--green-senegal) 33%, var(--yellow-senegal) 33% 66%, var(--red-senegal) 66%);
+  }
+
+  footer {
+    background: var(--earth);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  footer p { color: rgba(255,255,255,0.6); font-size: 0.85rem; }
+
+  /* ============ FLOATING WA ============ */
+  .whatsapp-float {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    background: #25D366;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 30px rgba(37,211,102,0.35);
+    z-index: 1000;
+    transition: all 0.3s;
+    text-decoration: none;
+    animation: pulse-wa 2s infinite;
+  }
+
+  .whatsapp-float:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 40px rgba(37,211,102,0.5);
+  }
+
+  .whatsapp-float svg { width: 30px; height: 30px; fill: white; }
+
+  /* ============ ANIMATIONS ============ */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInScale {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+  }
+
+  @keyframes pulse-wa {
+    0% { box-shadow: 0 6px 30px rgba(37,211,102,0.35); }
+    50% { box-shadow: 0 6px 30px rgba(37,211,102,0.6), 0 0 0 10px rgba(37,211,102,0.08); }
+    100% { box-shadow: 0 6px 30px rgba(37,211,102,0.35); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 768px) {
+    .hero { min-height: 50vh; padding: 5rem 1.5rem 3rem; }
+    .hero-details { gap: 1rem; }
+    .hero-detail-value { font-size: 1.4rem; }
+    .form-card { padding: 2rem 1.5rem; }
+    .counter-card { gap: 1.2rem; padding: 1.2rem 1.5rem; }
+    .counter-number { font-size: 2rem; }
+    .form-row { grid-template-columns: 1fr; }
+    section { padding: 3.5rem 1.5rem; }
+    .payment-grid { grid-template-columns: 1fr 1fr; }
+    .terrain-info-card { gap: 1rem; padding: 1rem; }
+    .terrain-info-value { font-size: 1.2rem; }
+  }
+
+  @media (max-width: 480px) {
+    .cta-btns { flex-direction: column; align-items: center; }
+    .btn { width: 100%; max-width: 300px; justify-content: center; }
+    .payment-grid { grid-template-columns: 1fr; }
+    .hero-detail-divider { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="senegal-stripe"></div>
+
+<!-- Nav -->
+<nav class="topbar">
+  <a href="index.html" class="topbar-brand">Baol Realty</a>
+  <a href="index.html" class="topbar-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Retour au site
+  </a>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">🏖️ À 500m de la plage</div>
+  <h1>Réservez votre terrain <span>à Mboro</span></h1>
+  <p class="hero-subtitle">Sécurisez dès maintenant votre parcelle viabilisée sur la Petite Côte du Sénégal. Paiement échelonné disponible.</p>
+  <div class="hero-details">
+    <div class="hero-detail">
+      <div class="hero-detail-value">225 m²</div>
+      <div class="hero-detail-label">Par parcelle</div>
+    </div>
+    <div class="hero-detail-divider"></div>
+    <div class="hero-detail">
+      <div class="hero-detail-value">1 500 000</div>
+      <div class="hero-detail-label">FCFA</div>
+    </div>
+    <div class="hero-detail-divider"></div>
+    <div class="hero-detail">
+      <div class="hero-detail-value">≈ 2 300 €</div>
+      <div class="hero-detail-label">Équivalent</div>
+    </div>
+  </div>
+  <a href="#reservation" class="hero-scroll">
+    Réserver
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
+  </a>
+</section>
+
+<!-- Modalités de paiement -->
+<section class="payment-section">
+  <div class="gold-line"></div>
+  <h2 class="section-title">Modalités de paiement</h2>
+  <p class="section-subtitle">Un paiement flexible adapté à la diaspora. Payez à votre rythme depuis l'Europe ou l'Afrique.</p>
+
+  <div class="payment-grid">
+    <div class="payment-card reveal">
+      <div class="payment-card-icon">💰</div>
+      <div class="payment-card-value">450 000 FCFA</div>
+      <div class="payment-card-label">Acompte (30 %)</div>
+    </div>
+    <div class="payment-card reveal">
+      <div class="payment-card-icon">📅</div>
+      <div class="payment-card-value">87 500 FCFA</div>
+      <div class="payment-card-label">/ mois pendant 12 mois</div>
+    </div>
+    <div class="payment-card reveal">
+      <div class="payment-card-icon">🏦</div>
+      <div class="payment-card-value">Virement</div>
+      <div class="payment-card-label">SEPA · Wave · OM</div>
+    </div>
+  </div>
+</section>
+
+<!-- Formulaire de réservation -->
+<section class="reservation-section" id="reservation">
+  <div class="gold-line"></div>
+  <h2 class="section-title">Réservez votre parcelle</h2>
+  <p class="section-subtitle">Remplissez le formulaire ci-dessous pour bloquer votre terrain à Mboro.</p>
+
+  <div class="reservation-wrapper">
+
+    <!-- Compteur -->
+    <div class="counter-card reveal">
+      <div class="counter-item">
+        <div class="counter-number available" id="availableCount">18</div>
+        <div class="counter-label">Disponibles</div>
+      </div>
+      <div class="counter-divider"></div>
+      <div class="counter-item">
+        <div class="counter-number reserved" id="reservedCount">7</div>
+        <div class="counter-label">Réservés</div>
+      </div>
+      <div class="counter-divider"></div>
+      <div class="counter-item">
+        <div class="counter-number total" id="totalCount">25</div>
+        <div class="counter-label">Total lots</div>
+      </div>
+    </div>
+
+    <!-- Barre de progression -->
+    <div class="progress-wrapper reveal">
+      <p class="progress-text" id="progressText">28 % des terrains déjà réservés</p>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Formulaire -->
+    <div class="form-card reveal">
+      <form id="reservationForm" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="nom">Nom</label>
+            <input class="form-input" type="text" id="nom" name="nom" placeholder="Diop" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="prenom">Prénom</label>
+            <input class="form-input" type="text" id="prenom" name="prenom" placeholder="Amadou" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input class="form-input" type="email" id="email" name="email" placeholder="amadou@email.com" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="telephone">Téléphone</label>
+            <input class="form-input" type="tel" id="telephone" name="telephone" placeholder="+33 6 12 34 56 78" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pays">Pays de résidence</label>
+          <select class="form-select" id="pays" name="pays" required>
+            <option value="" disabled selected>Sélectionnez votre pays</option>
+            <option value="FR">France</option>
+            <option value="IT">Italie</option>
+            <option value="ES">Espagne</option>
+            <option value="BE">Belgique</option>
+            <option value="DE">Allemagne</option>
+            <option value="CH">Suisse</option>
+            <option value="UK">Royaume-Uni</option>
+            <option value="SN">Sénégal</option>
+            <option value="US">États-Unis</option>
+            <option value="CA">Canada</option>
+            <option value="OTHER">Autre</option>
+          </select>
+        </div>
+
+        <div class="form-separator"></div>
+
+        <!-- Info terrain -->
+        <div class="terrain-info-card">
+          <div class="terrain-info-item">
+            <div class="terrain-info-value">225 m²</div>
+            <div class="terrain-info-label">Par parcelle</div>
+          </div>
+          <div class="terrain-info-divider"></div>
+          <div class="terrain-info-item">
+            <div class="terrain-info-value">1 500 000</div>
+            <div class="terrain-info-label">FCFA / parcelle</div>
+          </div>
+          <div class="terrain-info-divider"></div>
+          <div class="terrain-info-item">
+            <div class="terrain-info-value">≈ 2 300 €</div>
+            <div class="terrain-info-label">Équivalent</div>
+          </div>
+        </div>
+
+        <!-- Nombre de parcelles -->
+        <div class="form-group">
+          <label class="form-label" style="text-align:center;">Nombre de parcelles</label>
+          <div class="parcels-selector">
+            <button type="button" class="parcels-btn" onclick="changeParcels(-1)">−</button>
+            <span class="parcels-count" id="parcelsCount">1</span>
+            <button type="button" class="parcels-btn" onclick="changeParcels(1)">+</button>
+          </div>
+          <div class="parcels-total" id="parcelsTotal">Total : 1 500 000 FCFA (≈ 2 300 €)</div>
+        </div>
+
+        <div class="form-separator"></div>
+
+        <!-- Message -->
+        <div class="form-group">
+          <label class="form-label" for="message">Message (optionnel)</label>
+          <textarea class="form-textarea" id="message" name="message" placeholder="Précisions, questions ou demande particulière…"></textarea>
+        </div>
+
+        <!-- Consent -->
+        <div class="form-group consent-row">
+          <input type="checkbox" id="consent" name="consent" required>
+          <label for="consent">
+            J'accepte que mes données soient utilisées pour traiter ma demande de réservation conformément à la <a href="#">politique de confidentialité</a>.
+          </label>
+        </div>
+
+        <button type="submit" class="btn-submit">📐 Réserver ma parcelle</button>
+      </form>
+
+      <p class="form-note">
+        La réservation n'est confirmée qu'après versement de l'acompte de 30 %.<br>
+        Un conseiller vous contactera sous 48h.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- Success Modal -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+    </div>
+    <h3>Réservation envoyée !</h3>
+    <p>Merci pour votre intérêt. Notre équipe vous contactera sous 48h pour confirmer votre réservation et les modalités de paiement.</p>
+    <button class="modal-close" onclick="closeModal()">Parfait</button>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2>Besoin d'un accompagnement ?</h2>
+  <p>Nos conseillers sont disponibles pour répondre à toutes vos questions et vous guider dans votre acquisition.</p>
+  <div class="cta-btns">
+    <a href="https://wa.me/33767953581?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20un%20terrain%20%C3%A0%20Mboro.%20Merci%20de%20me%20contacter." class="btn btn-whatsapp" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      WhatsApp
+    </a>
+    <a href="index.html" class="btn btn-gold">Découvrir le projet</a>
+  </div>
+</section>
+
+<div class="senegal-stripe"></div>
+
+<footer>
+  <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold-light);margin-bottom:0.5rem;">Baol Realty</p>
+  <p>© 2026 Baol Realty — Votre partenaire immobilier au Sénégal</p>
+</footer>
+
+<a href="https://wa.me/33767953581?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20un%20terrain%20%C3%A0%20Mboro." class="whatsapp-float" target="_blank">
+  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, { threshold: 0.15 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Reservation logic
+  const TERRAINS = { total: 25, reserved: 7 };
+  const PRICE_FCFA = 1500000;
+  const PRICE_EUR = 2300;
+  let parcelsCount = 1;
+
+  function updateCounter() {
+    const avail = TERRAINS.total - TERRAINS.reserved;
+    document.getElementById('availableCount').textContent = avail;
+    document.getElementById('reservedCount').textContent = TERRAINS.reserved;
+    document.getElementById('totalCount').textContent = TERRAINS.total;
+    const pct = Math.round((TERRAINS.reserved / TERRAINS.total) * 100);
+    document.getElementById('progressText').textContent = pct + ' % des terrains déjà réservés';
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function changeParcels(delta) {
+    const max = TERRAINS.total - TERRAINS.reserved;
+    parcelsCount = Math.max(1, Math.min(max, parcelsCount + delta));
+    document.getElementById('parcelsCount').textContent = parcelsCount;
+    const totalFCFA = (parcelsCount * PRICE_FCFA).toLocaleString('fr-FR');
+    const totalEUR = (parcelsCount * PRICE_EUR).toLocaleString('fr-FR');
+    document.getElementById('parcelsTotal').textContent =
+      'Total : ' + totalFCFA + ' FCFA (≈ ' + totalEUR + ' €)';
+  }
+
+  // Progress bar animation on scroll
+  const progressObs = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) updateCounter(); });
+  }, { threshold: 0.3 });
+  const pw = document.querySelector('.progress-wrapper');
+  if (pw) progressObs.observe(pw);
+
+  // Form submission
+  const form = document.getElementById('reservationForm');
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nom = document.getElementById('nom').value.trim();
+      const prenom = document.getElementById('prenom').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const telephone = document.getElementById('telephone').value.trim();
+      const pays = document.getElementById('pays').value;
+      const message = document.getElementById('message').value.trim();
+      const consent = document.getElementById('consent').checked;
+
+      let valid = true;
+      [nom, prenom, email, telephone].forEach(v => { if (!v) valid = false; });
+      if (!pays) valid = false;
+      if (!consent) valid = false;
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) valid = false;
+
+      if (!valid) {
+        alert('Veuillez remplir tous les champs obligatoires et accepter la politique de confidentialité.');
+        return;
+      }
+
+      const data = { nom, prenom, email, telephone, pays, parcelles: parcelsCount, message };
+      console.log('Réservation:', data);
+
+      TERRAINS.reserved += parcelsCount;
+      updateCounter();
+
+      document.getElementById('successModal').classList.add('active');
+      form.reset();
+      parcelsCount = 1;
+      document.getElementById('parcelsCount').textContent = '1';
+      document.getElementById('parcelsTotal').textContent = 'Total : 1 500 000 FCFA (≈ 2 300 €)';
+    });
+  }
+
+  function closeModal() {
+    document.getElementById('successModal').classList.remove('active');
+  }
+</script>
+
+</body>
+</html>
