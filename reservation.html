@@ -828,6 +828,7 @@ function validateStep(step) {
     ok &= req('civilite'); ok &= req('prenom'); ok &= req('nom');
     ok &= req('nationalite'); ok &= req('pays_residence');
     ok &= req('email'); ok &= req('email2'); ok &= req('whatsapp');
+    // Note: 'telephone' supprimé (champ absent, whatsapp suffit)
 
     const e1 = val('email'), e2 = val('email2');
     if (e1 && e2 && e1 !== e2) {
