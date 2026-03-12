@@ -755,7 +755,7 @@ input.error, select.error, textarea.error { border-color: var(--red); }
 <!-- Loading overlay -->
 <div id="loading">
   <div class="spinner"></div>
-  <p>Génération du PDF et envoi en cours…</p>
+  <p id="loading-msg">Génération du PDF…</p>
 </div>
 
 
@@ -1052,6 +1052,8 @@ async function submitForm() {
 
   // Spinner ON — toujours caché à la fin quoi qu'il arrive
   loadingEl.classList.add('show');
+  const loadingMsg = document.getElementById('loading-msg');
+  function setMsg(txt) { if (loadingMsg) loadingMsg.textContent = txt; }
 
   const nom = `${val('prenom')} ${val('nom')}`;
 
@@ -1067,37 +1069,50 @@ async function submitForm() {
     if (statusNoteEl) statusNoteEl.textContent = msg;
   }
 
-  async function sendFormSubmit(toEmail, subject, message) {
-    const fd = new FormData();
-    fd.append('_to',         toEmail);
-    fd.append('_subject',    subject);
-    fd.append('_replyto',    val('email'));
-    fd.append('_template',   'box');
-    fd.append('_captcha',    'false');
-    fd.append('message',     message);
-    const res = await fetch(`https://formsubmit.co/${toEmail}`, {
-      method: 'POST',
-      body:   fd
+  // Envoi email via Web3Forms (gratuit, pas de CORS, pas d'activation requise)
+  // → Créer une clé gratuite sur https://web3forms.com avec baolrealty@gmail.com
+  // → Coller la clé dans WEB3FORMS_ACCESS_KEY ci-dessous
+  const WEB3FORMS_ACCESS_KEY = "b3128fb2-1f08-4c08-a374-c6a0b5e64a4a"; // ← coller la clé ici
+
+  async function sendEmail(toEmail, subject, message) {
+    const payload = {
+      access_key:   WEB3FORMS_ACCESS_KEY,
+      subject:      subject,
+      from_name:    "Baol Realty",
+      email:        val('email'),
+      message:      message,
+      // Web3Forms envoie toujours à l'adresse liée à la clé (baolrealty@gmail.com)
+      // Pour envoyer au client aussi, on met son email dans "replyto"
+      replyto:      val('email'),
+      to_email:     toEmail,
+    };
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body:    JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return res;
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message);
+    return data;
   }
 
   // ── 1. Générer le PDF ────────────────────────────────────────────────
+  setMsg('Génération du PDF…');
   let pdf;
   try {
     pdf = await generatePDF();
     pdf.save(`Baol_Realty_Interet_${nom.replace(/\s+/g,'_')}.pdf`);
   } catch (pdfErr) {
     console.error('Erreur PDF:', pdfErr);
-    showSuccess('⚠️ Erreur PDF. Rechargez la page et réessayez.');
+    showSuccess('⚠️ Erreur PDF : ' + pdfErr.message + '. Rechargez et réessayez.');
     return;
   }
+  setMsg('Envoi des emails…');
 
   // ── 2. Construire le récapitulatif ───────────────────────────────────
   const recap = [
     'Nom complet    : ' + nom,
-    'Téléphone      : ' + val('telephone'),
+    'WhatsApp       : ' + val('whatsapp'),
     'WhatsApp       : ' + val('whatsapp'),
     'Email          : ' + val('email'),
     'Pays           : ' + val('pays_residence'),
@@ -1118,7 +1133,7 @@ async function submitForm() {
 
   // Email 1 → client
   try {
-    await sendFormSubmit(
+    await sendEmail(
       val('email'),
       "Baol Realty — Confirmation de votre fiche d'intérêt",
       "Bonjour " + nom + ",\n\n" +
@@ -1134,7 +1149,7 @@ async function submitForm() {
 
   // Email 2 → Baol Realty
   try {
-    await sendFormSubmit(
+    await sendEmail(
       BAOL_EMAIL,
       'Nouvelle fiche — ' + nom + ' (' + val('pays_residence') + ')',
       "Nouvelle fiche d'intérêt reçue.\n\n" + recap
