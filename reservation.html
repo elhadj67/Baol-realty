@@ -771,29 +771,31 @@ const BAOL_EMAIL           = "baolrealty@gmail.com";
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 // ═══ Signature Pad ═══════════════════════════════════════════════════════
-let sigPad;
-window.addEventListener('load', () => {
+// Initialisé en lazy lors du passage à l'étape 3 (canvas masqué avant)
+let sigPad = null;
+
+function initSigPad() {
   const canvas = document.getElementById('sig-canvas');
   const wrap   = document.getElementById('sig-wrap');
-  canvas.width  = wrap.offsetWidth;
+  // Forcer la taille réelle maintenant que le div est visible
+  canvas.width  = wrap.getBoundingClientRect().width || wrap.offsetWidth || 500;
   canvas.height = 140;
 
-  sigPad = new SignaturePad(canvas, {
-    penColor: '#1A0F05',
-    minWidth: 1, maxWidth: 3,
-  });
+  if (sigPad) { sigPad.clear(); return; } // réinitialise si déjà créé
 
+  sigPad = new SignaturePad(canvas, { penColor: '#1A0F05', minWidth: 1, maxWidth: 3 });
   sigPad.addEventListener('beginStroke', () => {
     document.getElementById('sig-hint').style.opacity = '0';
   });
+}
 
-  // Set date
+window.addEventListener('load', () => {
   document.getElementById('date-sig').value =
     new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
 });
 
 function clearSig() {
-  sigPad.clear();
+  if (sigPad) { sigPad.clear(); }
   document.getElementById('sig-hint').style.opacity = '1';
 }
 
@@ -802,7 +804,7 @@ let currentStep = 1;
 
 function goStep(n) {
   if (n > currentStep && !validateStep(currentStep)) return;
-  if (n === 3) buildRecap();
+  if (n === 3) { buildRecap(); setTimeout(initSigPad, 50); }
 
   document.getElementById(`step${currentStep}`).classList.remove('active');
   document.getElementById(`step${n}`).classList.add('active');
@@ -1039,7 +1041,7 @@ async function generatePDF() {
 async function submitForm() {
   clearErrors();
 
-  if (sigPad.isEmpty()) {
+  if (!sigPad || sigPad.isEmpty()) {
     alert('Veuillez apposer votre signature avant de soumettre.'); return;
   }
   if (!document.getElementById('rgpd').checked) {
@@ -1048,46 +1050,49 @@ async function submitForm() {
 
   document.getElementById('loading').classList.add('show');
 
+  // 1 — Toujours générer + télécharger le PDF
+  let pdf;
+  const nom = `${val('prenom')} ${val('nom')}`;
   try {
-    const pdf = await generatePDF();
-    const pdfB64 = pdf.output('datauristring').split(',')[1];
-    const nom = `${val('prenom')} ${val('nom')}`;
-
-    const templateParams = {
-      to_email:     val('email'),
-      to_name:      nom,
-      from_name:    'Baol Realty',
-      reply_to:     BAOL_EMAIL,
-      pays:         val('pays_residence'),
-      objectif:     radioVal('objectif'),
-      nb_parcelles: val('nb_parcelles'),
-      budget:       val('budget'),
-      whatsapp:     val('whatsapp'),
-      date_sig:     document.getElementById('date-sig').value,
-      pdf_base64:   pdfB64,
-    };
-
-    // Email to client
-    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...templateParams, bcc_email: BAOL_EMAIL });
-
-    // Download PDF locally as backup
+    pdf = await generatePDF();
     pdf.save(`Baol_Realty_Interet_${nom.replace(/\s+/g,'_')}.pdf`);
-
+  } catch (pdfErr) {
+    console.error('Erreur PDF:', pdfErr);
     document.getElementById('loading').classList.remove('show');
-    document.getElementById('progress').style.display = 'none';
-    for (let i=1; i<=3; i++) document.getElementById(`step${i}`).classList.remove('active');
-    document.getElementById('success-screen').style.display = 'block';
-    document.getElementById('confirm-email-note').textContent = `📧 Confirmation envoyée à : ${val('email')}`;
-
-  } catch (err) {
-    document.getElementById('loading').classList.remove('show');
-    console.error(err);
-    // Fallback: just download PDF
-    const pdf = await generatePDF();
-    const nom = `${val('prenom')} ${val('nom')}`;
-    pdf.save(`Baol_Realty_Interet_${nom.replace(/\s+/g,'_')}.pdf`);
-    alert('⚠️ Le PDF a été téléchargé sur votre appareil. L\'envoi email n\'a pas pu être effectué (configuration EmailJS à compléter). Transmettez le PDF à baolrealty@gmail.com.');
+    alert('Erreur lors de la génération du PDF. Veuillez réessayer.');
+    return;
   }
+
+  // 2 — Tenter l'envoi email (optionnel, ne bloque pas le succès)
+  const emailConfigured = EMAILJS_PUBLIC_KEY !== 'VOTRE_PUBLIC_KEY';
+  if (emailConfigured) {
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:     val('email'),
+        to_name:      nom,
+        from_name:    'Baol Realty',
+        reply_to:     BAOL_EMAIL,
+        bcc_email:    BAOL_EMAIL,
+        pays:         val('pays_residence'),
+        objectif:     radioVal('objectif'),
+        nb_parcelles: val('nb_parcelles'),
+        budget:       val('budget'),
+        whatsapp:     val('whatsapp'),
+        date_sig:     document.getElementById('date-sig').value,
+      });
+    } catch (emailErr) {
+      console.warn('Envoi email non bloquant:', emailErr);
+    }
+  }
+
+  // 3 — Afficher le succès dans tous les cas
+  document.getElementById('loading').classList.remove('show');
+  document.getElementById('progress').style.display = 'none';
+  for (let i = 1; i <= 3; i++) document.getElementById(`step${i}`).classList.remove('active');
+  document.getElementById('success-screen').style.display = 'block';
+  document.getElementById('confirm-email-note').textContent = emailConfigured
+    ? `📧 Confirmation envoyée à : ${val('email')}`
+    : `📥 Fiche PDF téléchargée · Envoyez-la à baolrealty@gmail.com`;
 }
 </script>
 
