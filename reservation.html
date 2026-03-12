@@ -1,1151 +1,1094 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baol Realty — Réservez votre parcelle à Mboro, Sénégal</title>
-<meta name="description" content="Réservez votre terrain à Mboro, Sénégal. Parcelles de 225m² à moins de 500m de l'océan. 1 500 000 FCFA avec paiement échelonné.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=DM+Sans:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Formulaire d'intérêt — Baol Realty</title>
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<!-- Libraries -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
 <style>
-  :root {
-    --gold: #B8892E;
-    --gold-light: #D4A843;
-    --gold-dark: #96701F;
-    --ocean: #1B6B93;
-    --ocean-deep: #0F4C6B;
-    --ocean-light: #48A9C5;
-    --sand: #F5E6C8;
-    --earth: #3A2A1C;
-    --earth-light: #5A4434;
-    --green-senegal: #00853F;
-    --red-senegal: #E31B23;
-    --yellow-senegal: #FDDA24;
-    --white: #FFFFFF;
-    --bg: #FFFFFF;
-    --bg-alt: #F9F7F2;
-    --text: #2A2A2A;
-    --text-light: #6B6B6B;
-    --text-muted: #9A9A9A;
-    --border: #E8E4DD;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
-  }
-
-  /* ============ NAV BAR ============ */
-  .topbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    background: rgba(58,42,28,0.95);
-    backdrop-filter: blur(12px);
-    padding: 0.8rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .topbar-brand {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--gold-light);
-    text-decoration: none;
-  }
-
-  .topbar-back {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.7);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: color 0.3s;
-  }
-
-  .topbar-back:hover { color: var(--gold-light); }
-  .topbar-back svg { width: 16px; height: 16px; }
-
-  /* ============ HERO ============ */
-  .hero {
-    min-height: 55vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    background:
-      radial-gradient(ellipse at 20% 80%, rgba(184,137,46,0.08) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 30%, rgba(27,107,147,0.06) 0%, transparent 50%),
-      linear-gradient(175deg, var(--earth) 0%, #2C1E12 50%, var(--earth-light) 100%);
-    text-align: center;
-    padding: 6rem 2rem 3.5rem;
-  }
-
-  .hero::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4A843' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    opacity: 0.5;
-    pointer-events: none;
-  }
-
-  .hero-badge {
-    display: inline-block;
-    background: linear-gradient(135deg, var(--green-senegal), #00a84f);
-    color: white;
-    padding: 0.4rem 1.2rem;
-    border-radius: 50px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    animation: fadeInUp 0.8s ease-out both;
-  }
-
-  .hero h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2rem, 5vw, 3.2rem);
-    font-weight: 800;
-    line-height: 1.15;
-    max-width: 700px;
-    margin-bottom: 1rem;
-    color: var(--white);
-    animation: fadeInUp 0.8s ease-out 0.15s both;
-  }
-
-  .hero h1 span {
-    background: linear-gradient(135deg, var(--gold-light), var(--gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-subtitle {
-    font-size: clamp(0.95rem, 2vw, 1.1rem);
-    font-weight: 300;
-    color: rgba(255,255,255,0.65);
-    max-width: 500px;
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-    animation: fadeInUp 0.8s ease-out 0.3s both;
-  }
-
-  .hero-details {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    animation: fadeInUp 0.8s ease-out 0.45s both;
-  }
-
-  .hero-detail {
-    text-align: center;
-  }
-
-  .hero-detail-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--gold-light);
-  }
-
-  .hero-detail-label {
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.45);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-top: 0.1rem;
-  }
-
-  .hero-detail-divider {
-    width: 1px;
-    height: 40px;
-    background: rgba(255,255,255,0.1);
-    align-self: center;
-  }
-
-  .hero-scroll {
-    position: absolute;
-    bottom: 1.2rem;
-    animation: bounce 2s infinite;
-    color: var(--gold);
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-    text-decoration: none;
-  }
-
-  .hero-scroll svg { width: 20px; height: 20px; }
-
-  /* ============ SECTION UTILS ============ */
-  section { padding: 4.5rem 2rem; }
-
-  .section-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 0.6rem;
-    color: var(--earth);
-  }
-
-  .section-subtitle {
-    text-align: center;
-    color: var(--text-light);
-    font-size: 1rem;
-    max-width: 550px;
-    margin: 0 auto 2.5rem;
-    line-height: 1.7;
-  }
-
-  .gold-line {
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    margin: 0 auto 1.2rem;
-    border-radius: 3px;
-  }
-
-  /* ============ PAYMENT INFO ============ */
-  .payment-section { background: var(--bg-alt); }
-
-  .payment-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.2rem;
-    max-width: 750px;
-    margin: 0 auto;
-  }
-
-  .payment-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    text-align: center;
-    transition: all 0.3s ease;
-  }
-
-  .payment-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-    border-color: rgba(184,137,46,0.3);
-  }
-
-  .payment-card-icon {
-    font-size: 1.8rem;
-    margin-bottom: 0.6rem;
-  }
-
-  .payment-card-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: var(--earth);
-    margin-bottom: 0.2rem;
-  }
-
-  .payment-card-label {
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-  }
-
-  /* ============ RESERVATION ============ */
-  .reservation-section { background: var(--bg); }
-
-  .reservation-wrapper {
-    max-width: 750px;
-    margin: 0 auto;
-  }
-
-  .counter-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 1.8rem 2.5rem;
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 2rem;
-  }
-
-  .counter-item { text-align: center; }
-
-  .counter-number {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    font-weight: 800;
-    line-height: 1;
-  }
-
-  .counter-number.available { color: var(--green-senegal); }
-  .counter-number.reserved { color: var(--gold); }
-  .counter-number.total { color: var(--ocean); }
-
-  .counter-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--text-muted);
-    margin-top: 0.35rem;
-  }
-
-  .counter-divider {
-    width: 1px;
-    height: 45px;
-    background: linear-gradient(to bottom, transparent, var(--border), transparent);
-  }
-
-  .progress-wrapper {
-    text-align: center;
-    margin-bottom: 2.5rem;
-  }
-
-  .progress-text {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-  }
-
-  .progress-bar {
-    width: 100%;
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--red-senegal));
-    border-radius: 3px;
-    transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  /* Form card */
-  .form-card {
-    background: var(--white);
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 3rem;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .form-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 3px;
-    background: linear-gradient(90deg, var(--green-senegal), var(--yellow-senegal), var(--red-senegal));
-  }
-
-  .form-group { margin-bottom: 1.4rem; }
-
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .form-label {
-    display: block;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--gold-dark);
-    font-weight: 600;
-    margin-bottom: 0.45rem;
-  }
-
-  .form-input,
-  .form-select,
-  .form-textarea {
-    width: 100%;
-    padding: 0.85rem 1rem;
-    border: 1.5px solid var(--border);
-    border-radius: 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    color: var(--text);
-    background: var(--bg-alt);
-    transition: all 0.3s ease;
-    outline: none;
-  }
-
-  .form-input:focus,
-  .form-select:focus,
-  .form-textarea:focus {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px rgba(184,137,46,0.1);
-    background: var(--white);
-  }
-
-  .form-input::placeholder,
-  .form-textarea::placeholder { color: #bbb; }
-
-  .form-select {
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-  }
-
-  .form-textarea {
-    resize: vertical;
-    min-height: 90px;
-  }
-
-  .form-separator {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--border), transparent);
-    margin: 1.8rem 0;
-  }
-
-  /* Terrain info in form */
-  .terrain-info-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    padding: 1.2rem 1.5rem;
-    border: 2px solid rgba(184,137,46,0.2);
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(184,137,46,0.04), rgba(27,107,147,0.04));
-    margin-bottom: 1rem;
-  }
-
-  .terrain-info-item { text-align: center; }
-
-  .terrain-info-value {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: var(--earth);
-  }
-
-  .terrain-info-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-  }
-
-  .terrain-info-divider {
-    width: 1px;
-    height: 35px;
-    background: var(--border);
-  }
-
-  /* Number of parcels */
-  .parcels-selector {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 0.5rem;
-  }
-
-  .parcels-btn {
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--border);
-    border-radius: 50%;
-    background: var(--bg-alt);
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--earth);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .parcels-btn:hover {
-    border-color: var(--gold);
-    background: var(--gold);
-    color: var(--white);
-  }
-
-  .parcels-count {
-    font-family: 'Playfair Display', serif;
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--gold);
-    min-width: 40px;
-    text-align: center;
-  }
-
-  .parcels-total {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 0.3rem;
-  }
-
-  /* Consent */
-  .consent-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-  }
-
-  .consent-row input[type="checkbox"] {
-    width: auto;
-    margin-top: 3px;
-    accent-color: var(--gold);
-  }
-
-  .consent-row label {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    line-height: 1.5;
-    cursor: pointer;
-  }
-
-  .consent-row a {
-    color: var(--gold);
-    text-decoration: underline;
-  }
-
-  /* Submit */
-  .btn-submit {
-    width: 100%;
-    padding: 1.1rem;
-    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-    color: var(--white);
-    border: none;
-    border-radius: 60px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    box-shadow: 0 4px 20px rgba(184,137,46,0.3);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-submit::after {
-    content: '';
-    position: absolute;
-    top: 0; left: -100%; width: 100%; height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-    transition: left 0.6s ease;
-  }
-
-  .btn-submit:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 35px rgba(184,137,46,0.45);
-  }
-
-  .btn-submit:hover::after { left: 100%; }
-
-  .form-note {
-    text-align: center;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-top: 1.2rem;
-    line-height: 1.6;
-  }
-
-  /* Success Modal */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
-    z-index: 1001;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
-  }
-
-  .modal-overlay.active {
-    display: flex;
-    animation: fadeInScale 0.3s ease;
-  }
-
-  .modal-box {
-    background: var(--white);
-    border-radius: 24px;
-    padding: 2.5rem;
-    max-width: 420px;
-    text-align: center;
-    animation: fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .modal-icon {
-    width: 64px; height: 64px;
-    background: linear-gradient(135deg, var(--green-senegal), #4CAF50);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.2rem;
-  }
-
-  .modal-icon svg { width: 28px; height: 28px; stroke: white; }
-
-  .modal-box h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: var(--earth);
-    margin-bottom: 0.5rem;
-  }
-
-  .modal-box p {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-  }
-
-  .modal-close {
-    padding: 0.7rem 2rem;
-    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
-    color: white;
-    border: none;
-    border-radius: 50px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-    box-shadow: 0 4px 15px rgba(184,137,46,0.3);
-  }
-
-  .modal-close:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(184,137,46,0.4);
-  }
-
-  /* ============ CTA ============ */
-  .cta-section {
-    background: var(--earth);
-    text-align: center;
-    padding: 5rem 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-section::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background:
-      radial-gradient(ellipse at 30% 50%, rgba(184,137,46,0.1) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 50%, rgba(27,107,147,0.08) 0%, transparent 50%);
-    pointer-events: none;
-  }
-
-  .cta-section h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(1.6rem, 3.5vw, 2.2rem);
-    font-weight: 800;
-    color: var(--white);
-    margin-bottom: 0.8rem;
-    position: relative;
-  }
-
-  .cta-section p {
-    color: rgba(255,255,255,0.6);
-    font-size: 0.95rem;
-    max-width: 480px;
-    margin: 0 auto 2rem;
-    line-height: 1.6;
-    position: relative;
-  }
-
-  .cta-btns {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    position: relative;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 1rem 2rem;
-    border-radius: 60px;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-decoration: none;
-    transition: all 0.4s ease;
-    cursor: pointer;
-    border: none;
-  }
-
-  .btn-gold {
-    background: linear-gradient(135deg, var(--gold-light), var(--gold));
-    color: white;
-    box-shadow: 0 4px 20px rgba(184,137,46,0.3);
-  }
-
-  .btn-gold:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 35px rgba(184,137,46,0.45);
-  }
-
-  .btn-whatsapp {
-    background: #25D366;
-    color: white;
-    box-shadow: 0 4px 20px rgba(37,211,102,0.25);
-  }
-
-  .btn-whatsapp:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 35px rgba(37,211,102,0.4);
-  }
-
-  .btn-whatsapp svg { width: 20px; height: 20px; fill: currentColor; }
-
-  /* ============ FOOTER ============ */
-  .senegal-stripe {
-    height: 4px;
-    background: linear-gradient(90deg, var(--green-senegal) 33%, var(--yellow-senegal) 33% 66%, var(--red-senegal) 66%);
-  }
-
-  footer {
-    background: var(--earth);
-    padding: 2rem;
-    text-align: center;
-  }
-
-  footer p { color: rgba(255,255,255,0.6); font-size: 0.85rem; }
-
-  /* ============ FLOATING WA ============ */
-  .whatsapp-float {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 60px;
-    height: 60px;
-    background: #25D366;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 6px 30px rgba(37,211,102,0.35);
-    z-index: 1000;
-    transition: all 0.3s;
-    text-decoration: none;
-    animation: pulse-wa 2s infinite;
-  }
-
-  .whatsapp-float:hover {
-    transform: scale(1.1);
-    box-shadow: 0 8px 40px rgba(37,211,102,0.5);
-  }
-
-  .whatsapp-float svg { width: 30px; height: 30px; fill: white; }
-
-  /* ============ ANIMATIONS ============ */
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeInScale {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-8px); }
-    60% { transform: translateY(-4px); }
-  }
-
-  @keyframes pulse-wa {
-    0% { box-shadow: 0 6px 30px rgba(37,211,102,0.35); }
-    50% { box-shadow: 0 6px 30px rgba(37,211,102,0.6), 0 0 0 10px rgba(37,211,102,0.08); }
-    100% { box-shadow: 0 6px 30px rgba(37,211,102,0.35); }
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* ============ RESPONSIVE ============ */
-  @media (max-width: 768px) {
-    .hero { min-height: 50vh; padding: 5rem 1.5rem 3rem; }
-    .hero-details { gap: 1rem; }
-    .hero-detail-value { font-size: 1.4rem; }
-    .form-card { padding: 2rem 1.5rem; }
-    .counter-card { gap: 1.2rem; padding: 1.2rem 1.5rem; }
-    .counter-number { font-size: 2rem; }
-    .form-row { grid-template-columns: 1fr; }
-    section { padding: 3.5rem 1.5rem; }
-    .payment-grid { grid-template-columns: 1fr 1fr; }
-    .terrain-info-card { gap: 1rem; padding: 1rem; }
-    .terrain-info-value { font-size: 1.2rem; }
-  }
-
-  @media (max-width: 480px) {
-    .cta-btns { flex-direction: column; align-items: center; }
-    .btn { width: 100%; max-width: 300px; justify-content: center; }
-    .payment-grid { grid-template-columns: 1fr; }
-    .hero-detail-divider { display: none; }
-  }
+/* ── Reset & Variables ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold:      #C9A44A;
+  --gold-lt:   #E8D09A;
+  --gold-dk:   #8B6914;
+  --brown:     #2C1A0E;
+  --brown-md:  #4A2E18;
+  --cream:     #FAF5EE;
+  --cream-dk:  #F0E8D8;
+  --text:      #1A0F05;
+  --text-md:   #5C3D1E;
+  --text-lt:   #9B7A55;
+  --green:     #009245;
+  --yellow:    #EFCE3A;
+  --red:       #CE1126;
+  --r:         6px;
+  --shadow:    0 4px 24px rgba(44,26,14,.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Flag stripe ─────────────────────────────────────────────────────────── */
+.flag-stripe {
+  height: 6px;
+  background: linear-gradient(90deg,
+    var(--green) 0 33.33%,
+    var(--yellow) 33.33% 66.66%,
+    var(--red) 66.66% 100%);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.site-header {
+  background: var(--brown);
+  padding: 20px 0 16px;
+  text-align: center;
+  position: relative;
+}
+.site-header img.logo {
+  height: 64px;
+  object-fit: contain;
+}
+.site-header h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.4rem, 3vw, 2rem);
+  font-weight: 600;
+  color: var(--gold);
+  margin-top: 8px;
+  letter-spacing: .04em;
+}
+.site-header p {
+  font-size: .85rem;
+  color: var(--gold-lt);
+  margin-top: 4px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+/* ── Hero band ───────────────────────────────────────────────────────────── */
+.hero-band {
+  background: linear-gradient(135deg, var(--brown-md) 0%, var(--brown) 60%);
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-band::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url('/cdn/shop/files/pade_garde.png') center/cover no-repeat;
+  opacity: .18;
+}
+.hero-band .ornament {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  margin-bottom: 12px; position: relative;
+}
+.hero-band .ornament::before,
+.hero-band .ornament::after {
+  content: ''; flex: 1; max-width: 60px; height: 1px; background: var(--gold);
+}
+.hero-band .diamond {
+  width: 10px; height: 10px;
+  background: var(--gold);
+  transform: rotate(45deg);
+}
+.hero-band h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.3rem, 4vw, 1.9rem);
+  font-weight: 400;
+  font-style: italic;
+  color: white;
+  position: relative;
+}
+.hero-band p {
+  font-size: .85rem;
+  color: var(--gold-lt);
+  margin-top: 8px;
+  position: relative;
+}
+
+/* ── Main container ──────────────────────────────────────────────────────── */
+.container {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 40px 20px 60px;
+}
+
+/* ── Progress bar ────────────────────────────────────────────────────────── */
+.progress-wrap {
+  display: flex; gap: 8px; margin-bottom: 36px; align-items: center;
+}
+.progress-step {
+  flex: 1; text-align: center;
+}
+.progress-step .dot {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 2px solid var(--gold-lt);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 6px;
+  font-size: .75rem; font-weight: 500; color: var(--text-lt);
+  transition: all .3s;
+}
+.progress-step .dot.active { background: var(--gold); border-color: var(--gold); color: white; }
+.progress-step .dot.done   { background: var(--brown); border-color: var(--brown); color: var(--gold); }
+.progress-step .label { font-size: .7rem; color: var(--text-lt); text-transform: uppercase; letter-spacing: .06em; }
+.progress-step .label.active { color: var(--gold); font-weight: 500; }
+.progress-line { flex: 0 0 24px; height: 2px; background: var(--cream-dk); border-radius: 2px; margin-bottom: 24px; }
+
+/* ── Section card ────────────────────────────────────────────────────────── */
+.form-step { display: none; }
+.form-step.active { display: block; animation: fadeUp .4s ease; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.section-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.section-card-header {
+  background: var(--brown);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-card-header .num {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .8rem; font-weight: 700; color: var(--brown); flex-shrink: 0;
+}
+.section-card-header h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 600;
+  color: white; letter-spacing: .02em;
+}
+.section-card-body { padding: 24px 20px; }
+
+/* ── Form fields ─────────────────────────────────────────────────────────── */
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field.full { grid-column: 1 / -1; }
+
+label {
+  font-size: .75rem; font-weight: 500;
+  color: var(--text-md); text-transform: uppercase; letter-spacing: .07em;
+}
+label .req { color: var(--gold); margin-left: 2px; }
+
+input, select, textarea {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem;
+  padding: 10px 14px;
+  border: 1.5px solid var(--cream-dk);
+  border-radius: var(--r);
+  background: var(--cream);
+  color: var(--text);
+  transition: border-color .2s, box-shadow .2s;
+  width: 100%;
+  outline: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,164,74,.15);
+  background: white;
+}
+textarea { resize: vertical; min-height: 80px; }
+select { cursor: pointer; }
+
+/* ── Radio / Checkbox groups ─────────────────────────────────────────────── */
+.choice-group {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.choice-group label {
+  font-size: .82rem; text-transform: none; letter-spacing: 0;
+  padding: 8px 14px;
+  border: 1.5px solid var(--cream-dk);
+  border-radius: 20px;
+  cursor: pointer; color: var(--text);
+  transition: all .2s;
+  user-select: none;
+}
+.choice-group input[type="radio"],
+.choice-group input[type="checkbox"] {
+  display: none;
+}
+.choice-group input:checked + label {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: white; font-weight: 500;
+}
+
+/* ── Signature pad ───────────────────────────────────────────────────────── */
+.sig-wrap {
+  border: 1.5px solid var(--cream-dk);
+  border-radius: var(--r);
+  background: var(--cream);
+  position: relative;
+  overflow: hidden;
+}
+.sig-wrap canvas {
+  display: block;
+  width: 100% !important;
+  height: 140px !important;
+  cursor: crosshair;
+  touch-action: none;
+}
+.sig-hint {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: .8rem; color: var(--text-lt); pointer-events: none;
+  transition: opacity .3s; text-align: center; line-height: 1.5;
+}
+.sig-actions {
+  display: flex; justify-content: flex-end; margin-top: 8px;
+}
+.btn-clear-sig {
+  font-size: .75rem; color: var(--text-lt);
+  background: none; border: none; cursor: pointer; padding: 4px 8px;
+  text-decoration: underline;
+}
+.btn-clear-sig:hover { color: var(--red); }
+
+/* ── Disclaimer ──────────────────────────────────────────────────────────── */
+.disclaimer {
+  background: var(--cream-dk);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--r);
+  padding: 12px 16px;
+  margin-top: 16px;
+}
+.disclaimer p {
+  font-size: .72rem;
+  color: var(--text-md);
+  line-height: 1.6;
+}
+.disclaimer strong { color: var(--gold-dk); }
+
+/* ── Navigation buttons ──────────────────────────────────────────────────── */
+.nav-row {
+  display: flex; gap: 12px; justify-content: space-between;
+  margin-top: 28px;
+}
+.btn {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .88rem; font-weight: 500;
+  padding: 12px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  border: none;
+  transition: all .25s;
+  letter-spacing: .03em;
+}
+.btn-prev {
+  background: white; color: var(--text-md);
+  border: 1.5px solid var(--cream-dk);
+}
+.btn-prev:hover { border-color: var(--gold); color: var(--gold); }
+.btn-next, .btn-submit {
+  background: var(--gold); color: var(--brown);
+  flex: 1; font-weight: 600;
+  box-shadow: 0 4px 14px rgba(201,164,74,.35);
+}
+.btn-next:hover, .btn-submit:hover {
+  background: var(--gold-dk); color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(201,164,74,.4);
+}
+
+/* ── Success screen ──────────────────────────────────────────────────────── */
+#success-screen {
+  display: none;
+  text-align: center; padding: 60px 20px;
+}
+#success-screen .check {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 2rem;
+}
+#success-screen h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem; color: var(--brown); margin-bottom: 12px;
+}
+#success-screen p { color: var(--text-md); line-height: 1.7; }
+#success-screen .email-note {
+  display: inline-block; margin-top: 16px;
+  background: var(--cream-dk); border-radius: 8px; padding: 10px 20px;
+  font-size: .82rem; color: var(--text-md);
+}
+
+/* ── Loading overlay ─────────────────────────────────────────────────────── */
+#loading {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(44,26,14,.65);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+}
+#loading.show { display: flex; }
+#loading .spinner {
+  width: 48px; height: 48px; border-radius: 50%;
+  border: 4px solid rgba(201,164,74,.3);
+  border-top-color: var(--gold);
+  animation: spin .8s linear infinite;
+}
+#loading p { color: var(--gold-lt); font-size: .9rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Error message ───────────────────────────────────────────────────────── */
+.field-error { font-size: .72rem; color: var(--red); margin-top: 2px; }
+input.error, select.error, textarea.error { border-color: var(--red); }
+
+/* ── Footer ──────────────────────────────────────────────────────────────── */
+.site-footer {
+  background: var(--brown);
+  text-align: center; padding: 16px;
+  font-size: .75rem; color: var(--gold-lt);
+}
+.site-footer a { color: var(--gold); text-decoration: none; }
+
+/* ── Responsive ──────────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .field-grid { grid-template-columns: 1fr; }
+  .nav-row { flex-direction: column-reverse; }
+  .btn-prev { width: 100%; text-align: center; }
+}
 </style>
 </head>
+
 <body>
 
-<div class="senegal-stripe"></div>
+<!-- Top flag stripe -->
+<div class="flag-stripe"></div>
 
-<!-- Nav -->
-<nav class="topbar">
-  <a href="index.html" class="topbar-brand">Baol Realty</a>
-  <a href="index.html" class="topbar-back">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-    Retour au site
-  </a>
-</nav>
+<!-- Header -->
+<header class="site-header">
+  <img src="logo.png"
+       alt="Baol Realty Logo" class="logo"
+       onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block'"/>
+  <div id="logo-text" style="display:none; font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:700; color:var(--gold);">BAOL REALTY</div>
+  <h1>Formulaire d'intérêt — Parcelles Mboro</h1>
+  <p>Sénégal · À moins de 500 m de la plage</p>
+</header>
 
-<!-- Hero -->
-<section class="hero">
-  <div class="hero-badge">🏖️ À 500m de la plage</div>
-  <h1>Réservez votre terrain <span>à Mboro</span></h1>
-  <p class="hero-subtitle">Sécurisez dès maintenant votre parcelle viabilisée sur la Petite Côte du Sénégal. Paiement échelonné disponible.</p>
-  <div class="hero-details">
-    <div class="hero-detail">
-      <div class="hero-detail-value">225 m²</div>
-      <div class="hero-detail-label">Par parcelle</div>
-    </div>
-    <div class="hero-detail-divider"></div>
-    <div class="hero-detail">
-      <div class="hero-detail-value">1 500 000</div>
-      <div class="hero-detail-label">FCFA</div>
-    </div>
-    <div class="hero-detail-divider"></div>
-    <div class="hero-detail">
-      <div class="hero-detail-value">≈ 2 300 €</div>
-      <div class="hero-detail-label">Équivalent</div>
-    </div>
-  </div>
-  <a href="#reservation" class="hero-scroll">
-    Réserver
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 13l5 5 5-5M7 6l5 5 5-5"/></svg>
-  </a>
-</section>
+<!-- Hero band -->
+<div class="hero-band">
+  <div class="ornament"><div class="diamond"></div></div>
+  <h2>Investissez dans votre avenir au Sénégal</h2>
+  <p>Parcelles viabilisées de 225 m² · 1 500 000 FCFA · Facilités de paiement sur 12 mois</p>
+</div>
 
-<!-- Modalités de paiement -->
-<section class="payment-section">
-  <div class="gold-line"></div>
-  <h2 class="section-title">Modalités de paiement</h2>
-  <p class="section-subtitle">Un paiement flexible adapté à la diaspora. Payez à votre rythme depuis l'Europe ou l'Afrique.</p>
+<!-- Bottom flag stripe -->
+<div class="flag-stripe"></div>
 
-  <div class="payment-grid">
-    <div class="payment-card reveal">
-      <div class="payment-card-icon">💰</div>
-      <div class="payment-card-value">450 000 FCFA</div>
-      <div class="payment-card-label">Acompte (30 %)</div>
+<!-- Main -->
+<main class="container">
+
+  <!-- Progress -->
+  <div class="progress-wrap" id="progress">
+    <div class="progress-step" id="step-ind-1">
+      <div class="dot active" id="dot-1">1</div>
+      <div class="label active" id="lbl-1">Identité</div>
     </div>
-    <div class="payment-card reveal">
-      <div class="payment-card-icon">📅</div>
-      <div class="payment-card-value">87 500 FCFA</div>
-      <div class="payment-card-label">/ mois pendant 12 mois</div>
+    <div class="progress-line"></div>
+    <div class="progress-step" id="step-ind-2">
+      <div class="dot" id="dot-2">2</div>
+      <div class="label" id="lbl-2">Projet</div>
     </div>
-    <div class="payment-card reveal">
-      <div class="payment-card-icon">🏦</div>
-      <div class="payment-card-value">Virement</div>
-      <div class="payment-card-label">SEPA · Wave · OM</div>
+    <div class="progress-line"></div>
+    <div class="progress-step" id="step-ind-3">
+      <div class="dot" id="dot-3">3</div>
+      <div class="label" id="lbl-3">Engagement</div>
     </div>
   </div>
-</section>
 
-<!-- Formulaire de réservation -->
-<section class="reservation-section" id="reservation">
-  <div class="gold-line"></div>
-  <h2 class="section-title">Réservez votre parcelle</h2>
-  <p class="section-subtitle">Remplissez le formulaire ci-dessous pour bloquer votre terrain à Mboro.</p>
+  <!-- ═══ STEP 1 : Identité ═══════════════════════════════════════════════ -->
+  <div class="form-step active" id="step1">
 
-  <div class="reservation-wrapper">
-
-    <!-- Compteur -->
-    <div class="counter-card reveal">
-      <div class="counter-item">
-        <div class="counter-number available" id="availableCount">18</div>
-        <div class="counter-label">Disponibles</div>
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="num">A</div>
+        <h3>Informations personnelles</h3>
       </div>
-      <div class="counter-divider"></div>
-      <div class="counter-item">
-        <div class="counter-number reserved" id="reservedCount">7</div>
-        <div class="counter-label">Réservés</div>
-      </div>
-      <div class="counter-divider"></div>
-      <div class="counter-item">
-        <div class="counter-number total" id="totalCount">25</div>
-        <div class="counter-label">Total lots</div>
+      <div class="section-card-body">
+        <div class="field-grid">
+
+          <div class="field">
+            <label for="civilite">Civilité <span class="req">*</span></label>
+            <select id="civilite" name="civilite" required>
+              <option value="">— Choisir —</option>
+              <option>M.</option>
+              <option>Mme</option>
+              <option>Dr</option>
+              <option>Pr</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="prenom">Prénom <span class="req">*</span></label>
+            <input id="prenom" name="prenom" type="text" placeholder="Votre prénom" required/>
+          </div>
+
+          <div class="field">
+            <label for="nom">Nom <span class="req">*</span></label>
+            <input id="nom" name="nom" type="text" placeholder="Votre nom" required/>
+          </div>
+
+          <div class="field">
+            <label for="ddn">Date de naissance</label>
+            <input id="ddn" name="ddn" type="date"/>
+          </div>
+
+          <div class="field">
+            <label for="nationalite">Nationalité <span class="req">*</span></label>
+            <input id="nationalite" name="nationalite" type="text" placeholder="Ex : Française, Sénégalaise…" required/>
+          </div>
+
+          <div class="field">
+            <label for="pays_residence">Pays de résidence <span class="req">*</span></label>
+            <select id="pays_residence" name="pays_residence" required>
+              <option value="">— Sélectionner —</option>
+              <option>France</option>
+              <option>Belgique</option>
+              <option>Suisse</option>
+              <option>Italie</option>
+              <option>Espagne</option>
+              <option>Allemagne</option>
+              <option>Portugal</option>
+              <option>Royaume-Uni</option>
+              <option>Canada</option>
+              <option>États-Unis</option>
+              <option>Sénégal</option>
+              <option>Côte d'Ivoire</option>
+              <option>Autre</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="adresse">Adresse complète</label>
+            <input id="adresse" name="adresse" type="text" placeholder="Rue, ville, code postal, pays"/>
+          </div>
+
+        </div>
       </div>
     </div>
 
-    <!-- Barre de progression -->
-    <div class="progress-wrapper reveal">
-      <p class="progress-text" id="progressText">28 % des terrains déjà réservés</p>
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="num">B</div>
+        <h3>Coordonnées</h3>
+      </div>
+      <div class="section-card-body">
+        <div class="field-grid">
+
+          <div class="field">
+            <label for="email">Email <span class="req">*</span></label>
+            <input id="email" name="email" type="email" placeholder="votre@email.com" required/>
+          </div>
+
+          <div class="field">
+            <label for="email2">Confirmer l'email <span class="req">*</span></label>
+            <input id="email2" name="email2" type="email" placeholder="votre@email.com" required/>
+          </div>
+
+          <div class="field">
+            <label for="tel_fr">Téléphone France / Europe</label>
+            <input id="tel_fr" name="tel_fr" type="tel" placeholder="+33 6 XX XX XX XX"/>
+          </div>
+
+          <div class="field">
+            <label for="tel_sn">Téléphone Sénégal</label>
+            <input id="tel_sn" name="tel_sn" type="tel" placeholder="+221 77 XXX XX XX"/>
+          </div>
+
+          <div class="field">
+            <label for="whatsapp">WhatsApp <span class="req">*</span></label>
+            <input id="whatsapp" name="whatsapp" type="tel" placeholder="+33 ou +221…" required/>
+          </div>
+
+          <div class="field">
+            <label for="contact_pref">Canal préféré</label>
+            <div class="choice-group">
+              <input type="radio" name="contact_pref" id="cp_wp" value="WhatsApp" checked/>
+              <label for="cp_wp">WhatsApp</label>
+              <input type="radio" name="contact_pref" id="cp_em" value="Email"/>
+              <label for="cp_em">Email</label>
+              <input type="radio" name="contact_pref" id="cp_tel" value="Téléphone"/>
+              <label for="cp_tel">Téléphone</label>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 
-    <!-- Formulaire -->
-    <div class="form-card reveal">
-      <form id="reservationForm" novalidate>
+    <div class="nav-row">
+      <button class="btn btn-next" onclick="goStep(2)">Étape suivante →</button>
+    </div>
+  </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="nom">Nom</label>
-            <input class="form-input" type="text" id="nom" name="nom" placeholder="Diop" required>
+  <!-- ═══ STEP 2 : Projet ══════════════════════════════════════════════════ -->
+  <div class="form-step" id="step2">
+
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="num">C</div>
+        <h3>Votre projet immobilier</h3>
+      </div>
+      <div class="section-card-body">
+        <div class="field-grid">
+
+          <div class="field full">
+            <label>Objectif principal <span class="req">*</span></label>
+            <div class="choice-group">
+              <input type="radio" name="objectif" id="obj1" value="Résidence principale au Sénégal"/>
+              <label for="obj1">Résidence principale</label>
+              <input type="radio" name="objectif" id="obj2" value="Résidence secondaire / vacances"/>
+              <label for="obj2">Résidence secondaire</label>
+              <input type="radio" name="objectif" id="obj3" value="Investissement locatif"/>
+              <label for="obj3">Investissement locatif</label>
+              <input type="radio" name="objectif" id="obj4" value="Retraite au Sénégal"/>
+              <label for="obj4">Retraite</label>
+              <input type="radio" name="objectif" id="obj5" value="Autre"/>
+              <label for="obj5">Autre</label>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label" for="prenom">Prénom</label>
-            <input class="form-input" type="text" id="prenom" name="prenom" placeholder="Amadou" required>
+
+          <div class="field">
+            <label for="nb_parcelles">Nombre de parcelles souhaitées</label>
+            <select id="nb_parcelles" name="nb_parcelles">
+              <option value="1">1 parcelle (225 m²)</option>
+              <option value="2">2 parcelles (450 m²)</option>
+              <option value="3+">3 parcelles et plus</option>
+              <option value="À définir">À définir</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="budget">Budget global envisagé</label>
+            <select id="budget" name="budget">
+              <option value="">— Sélectionner —</option>
+              <option>1 500 000 FCFA (≈ 2 300 €)</option>
+              <option>3 000 000 FCFA (≈ 4 600 €)</option>
+              <option>Plus de 3 000 000 FCFA</option>
+              <option>À préciser</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="horizon">Horizon d'achat</label>
+            <div class="choice-group">
+              <input type="radio" name="horizon" id="h1" value="Immédiat (moins de 3 mois)"/>
+              <label for="h1">Immédiat</label>
+              <input type="radio" name="horizon" id="h2" value="Court terme (3–6 mois)"/>
+              <label for="h2">3–6 mois</label>
+              <input type="radio" name="horizon" id="h3" value="Moyen terme (6–12 mois)"/>
+              <label for="h3">6–12 mois</label>
+              <input type="radio" name="horizon" id="h4" value="Long terme (+ d'un an)"/>
+              <label for="h4">+ 1 an</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="financement">Mode de financement envisagé</label>
+            <div class="choice-group">
+              <input type="radio" name="financement" id="f1" value="Fonds propres (comptant)"/>
+              <label for="f1">Fonds propres</label>
+              <input type="radio" name="financement" id="f2" value="Facilités Baol Realty (30% + 12 mensualités)"/>
+              <label for="f2">Facilités Baol Realty</label>
+              <input type="radio" name="financement" id="f3" value="Crédit bancaire"/>
+              <label for="f3">Crédit bancaire</label>
+              <input type="radio" name="financement" id="f4" value="Non défini"/>
+              <label for="f4">Non défini</label>
+            </div>
+          </div>
+
+          <div class="field full">
+            <label for="questions">Questions ou commentaires</label>
+            <textarea id="questions" name="questions" rows="3"
+              placeholder="Toute question sur le projet, la localisation, les délais de livraison…"></textarea>
+          </div>
+
+          <div class="field full">
+            <label>Comment avez-vous connu Baol Realty ?</label>
+            <div class="choice-group">
+              <input type="radio" name="source" id="s1" value="Bouche à oreille / famille"/>
+              <label for="s1">Bouche à oreille</label>
+              <input type="radio" name="source" id="s2" value="Facebook"/>
+              <label for="s2">Facebook</label>
+              <input type="radio" name="source" id="s3" value="Instagram"/>
+              <label for="s3">Instagram</label>
+              <input type="radio" name="source" id="s4" value="TikTok"/>
+              <label for="s4">TikTok</label>
+              <input type="radio" name="source" id="s5" value="WhatsApp"/>
+              <label for="s5">WhatsApp</label>
+              <input type="radio" name="source" id="s6" value="Site web"/>
+              <label for="s6">Site web</label>
+              <input type="radio" name="source" id="s7" value="Autre"/>
+              <label for="s7">Autre</label>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn btn-prev" onclick="goStep(1)">← Retour</button>
+      <button class="btn btn-next" onclick="goStep(3)">Étape suivante →</button>
+    </div>
+  </div>
+
+  <!-- ═══ STEP 3 : Engagement ══════════════════════════════════════════════ -->
+  <div class="form-step" id="step3">
+
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="num">D</div>
+        <h3>Récapitulatif &amp; Signature</h3>
+      </div>
+      <div class="section-card-body">
+
+        <!-- Recap dynamique -->
+        <div id="recap-box" style="background:var(--cream);border-radius:8px;padding:16px;margin-bottom:20px;font-size:.85rem;line-height:1.8;color:var(--text-md);">
+          <!-- Rempli par JS -->
+        </div>
+
+        <!-- Signature -->
+        <div class="field" style="margin-bottom:16px;">
+          <label>Signature à main levée <span class="req">*</span></label>
+          <div class="sig-wrap" id="sig-wrap">
+            <canvas id="sig-canvas"></canvas>
+            <div class="sig-hint" id="sig-hint">✍️ Signez ici avec votre doigt ou votre souris</div>
+          </div>
+          <div class="sig-actions">
+            <button type="button" class="btn-clear-sig" onclick="clearSig()">Effacer la signature</button>
           </div>
         </div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label" for="email">Email</label>
-            <input class="form-input" type="email" id="email" name="email" placeholder="amadou@email.com" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="telephone">Téléphone</label>
-            <input class="form-input" type="tel" id="telephone" name="telephone" placeholder="+33 6 12 34 56 78" required>
-          </div>
+        <!-- Date auto -->
+        <div class="field" style="margin-bottom:16px;">
+          <label>Date de signature</label>
+          <input id="date-sig" type="text" readonly style="background:var(--cream-dk); cursor:default;"/>
         </div>
 
-        <div class="form-group">
-          <label class="form-label" for="pays">Pays de résidence</label>
-          <select class="form-select" id="pays" name="pays" required>
-            <option value="" disabled selected>Sélectionnez votre pays</option>
-            <option value="FR">France</option>
-            <option value="IT">Italie</option>
-            <option value="ES">Espagne</option>
-            <option value="BE">Belgique</option>
-            <option value="DE">Allemagne</option>
-            <option value="CH">Suisse</option>
-            <option value="UK">Royaume-Uni</option>
-            <option value="SN">Sénégal</option>
-            <option value="US">États-Unis</option>
-            <option value="CA">Canada</option>
-            <option value="OTHER">Autre</option>
-          </select>
+        <!-- Disclaimer -->
+        <div class="disclaimer">
+          <p>
+            <strong>* Note importante :</strong> Ce formulaire d'intérêt est établi à titre informatif et exploratoire.
+            Il ne constitue en aucun cas un contrat de vente, une promesse d'achat, ni un engagement contractuel
+            de quelque nature que ce soit, ni pour l'inscrit, ni pour Baol Realty.
+            Aucun montant n'est dû à ce stade. La réservation effective d'une parcelle sera formalisée par
+            un acte distinct signé entre les parties.
+          </p>
         </div>
 
-        <div class="form-separator"></div>
-
-        <!-- Info terrain -->
-        <div class="terrain-info-card">
-          <div class="terrain-info-item">
-            <div class="terrain-info-value">225 m²</div>
-            <div class="terrain-info-label">Par parcelle</div>
-          </div>
-          <div class="terrain-info-divider"></div>
-          <div class="terrain-info-item">
-            <div class="terrain-info-value">1 500 000</div>
-            <div class="terrain-info-label">FCFA / parcelle</div>
-          </div>
-          <div class="terrain-info-divider"></div>
-          <div class="terrain-info-item">
-            <div class="terrain-info-value">≈ 2 300 €</div>
-            <div class="terrain-info-label">Équivalent</div>
-          </div>
-        </div>
-
-        <!-- Nombre de parcelles -->
-        <div class="form-group">
-          <label class="form-label" style="text-align:center;">Nombre de parcelles</label>
-          <div class="parcels-selector">
-            <button type="button" class="parcels-btn" onclick="changeParcels(-1)">−</button>
-            <span class="parcels-count" id="parcelsCount">1</span>
-            <button type="button" class="parcels-btn" onclick="changeParcels(1)">+</button>
-          </div>
-          <div class="parcels-total" id="parcelsTotal">Total : 1 500 000 FCFA (≈ 2 300 €)</div>
-        </div>
-
-        <div class="form-separator"></div>
-
-        <!-- Message -->
-        <div class="form-group">
-          <label class="form-label" for="message">Message (optionnel)</label>
-          <textarea class="form-textarea" id="message" name="message" placeholder="Précisions, questions ou demande particulière…"></textarea>
-        </div>
-
-        <!-- Consent -->
-        <div class="form-group consent-row">
-          <input type="checkbox" id="consent" name="consent" required>
-          <label for="consent">
-            J'accepte que mes données soient utilisées pour traiter ma demande de réservation conformément à la <a href="#">politique de confidentialité</a>.
+        <!-- RGPD -->
+        <div style="margin-top:16px; display:flex; gap:10px; align-items:flex-start;">
+          <input type="checkbox" id="rgpd" style="width:16px;height:16px;margin-top:3px;flex-shrink:0;"/>
+          <label for="rgpd" style="text-transform:none;letter-spacing:0;font-size:.78rem;color:var(--text-md);cursor:pointer;">
+            J'accepte que mes données personnelles soient traitées par Baol Realty dans le cadre
+            de ce projet immobilier, conformément à la réglementation sur la protection des données. <span class="req">*</span>
           </label>
         </div>
 
-        <button type="submit" class="btn-submit">📐 Réserver ma parcelle</button>
-      </form>
-
-      <p class="form-note">
-        La réservation n'est confirmée qu'après versement de l'acompte de 30 %.<br>
-        Un conseiller vous contactera sous 48h.
-      </p>
+      </div>
     </div>
 
-  </div>
-</section>
-
-<!-- Success Modal -->
-<div class="modal-overlay" id="successModal">
-  <div class="modal-box">
-    <div class="modal-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20 6 9 17 4 12"></polyline>
-      </svg>
+    <div class="nav-row">
+      <button class="btn btn-prev" onclick="goStep(2)">← Retour</button>
+      <button class="btn btn-submit" id="submit-btn" onclick="submitForm()">
+        ✉️ Envoyer ma fiche d'intérêt
+      </button>
     </div>
-    <h3>Réservation envoyée !</h3>
-    <p>Merci pour votre intérêt. Notre équipe vous contactera sous 48h pour confirmer votre réservation et les modalités de paiement.</p>
-    <button class="modal-close" onclick="closeModal()">Parfait</button>
   </div>
-</div>
 
-<!-- CTA -->
-<section class="cta-section">
-  <h2>Besoin d'un accompagnement ?</h2>
-  <p>Nos conseillers sont disponibles pour répondre à toutes vos questions et vous guider dans votre acquisition.</p>
-  <div class="cta-btns">
-    <a href="https://wa.me/33767953581?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20un%20terrain%20%C3%A0%20Mboro.%20Merci%20de%20me%20contacter." class="btn btn-whatsapp" target="_blank">
-      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      WhatsApp
-    </a>
-    <a href="index.html" class="btn btn-gold">Découvrir le projet</a>
+  <!-- ═══ Success ══════════════════════════════════════════════════════════ -->
+  <div id="success-screen">
+    <div class="check">✓</div>
+    <h2>Fiche envoyée avec succès !</h2>
+    <p>Merci pour votre intérêt pour nos parcelles à Mboro.<br/>
+       Un conseiller Baol Realty vous contactera très prochainement.</p>
+    <div class="email-note" id="confirm-email-note"></div>
+    <p style="margin-top:24px;font-size:.8rem;color:var(--text-lt);">
+      📎 Un récapitulatif PDF a été envoyé à votre adresse email.
+    </p>
   </div>
-</section>
 
-<div class="senegal-stripe"></div>
+</main>
 
-<footer>
-  <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold-light);margin-bottom:0.5rem;">Baol Realty</p>
-  <p>© 2026 Baol Realty — Votre partenaire immobilier au Sénégal</p>
+<!-- Footer -->
+<div class="flag-stripe"></div>
+<footer class="site-footer">
+  <p>© 2025 Baol Realty · <a href="https://www.baolrealty.com">www.baolrealty.com</a>
+     · FR : +33 7 67 95 35 81 · SN : +221 77 481 10 34 · <a href="mailto:baolrealty@gmail.com">baolrealty@gmail.com</a>
+  </p>
 </footer>
 
-<a href="https://wa.me/33767953581?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9(e)%20par%20un%20terrain%20%C3%A0%20Mboro." class="whatsapp-float" target="_blank">
-  <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-</a>
+<!-- Loading overlay -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p>Génération du PDF et envoi en cours…</p>
+</div>
+
 
 <script>
-  // Reveal on scroll
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
-  }, { threshold: 0.15 });
-  reveals.forEach(el => observer.observe(el));
+// ═══ EmailJS Configuration ═══════════════════════════════════════════════
+// ⚠️ REMPLACER ces valeurs par vos identifiants EmailJS (https://emailjs.com)
+const EMAILJS_PUBLIC_KEY   = "VOTRE_PUBLIC_KEY";   // Account > API Keys
+const EMAILJS_SERVICE_ID   = "VOTRE_SERVICE_ID";   // Email Services
+const EMAILJS_TEMPLATE_ID  = "VOTRE_TEMPLATE_ID";  // Email Templates
+const BAOL_EMAIL           = "baolrealty@gmail.com";
 
-  // Reservation logic
-  const TERRAINS = { total: 25, reserved: 7 };
-  const PRICE_FCFA = 1500000;
-  const PRICE_EUR = 2300;
-  let parcelsCount = 1;
+emailjs.init(EMAILJS_PUBLIC_KEY);
 
-  function updateCounter() {
-    const avail = TERRAINS.total - TERRAINS.reserved;
-    document.getElementById('availableCount').textContent = avail;
-    document.getElementById('reservedCount').textContent = TERRAINS.reserved;
-    document.getElementById('totalCount').textContent = TERRAINS.total;
-    const pct = Math.round((TERRAINS.reserved / TERRAINS.total) * 100);
-    document.getElementById('progressText').textContent = pct + ' % des terrains déjà réservés';
-    document.getElementById('progressFill').style.width = pct + '%';
+// ═══ Signature Pad ═══════════════════════════════════════════════════════
+let sigPad;
+window.addEventListener('load', () => {
+  const canvas = document.getElementById('sig-canvas');
+  const wrap   = document.getElementById('sig-wrap');
+  canvas.width  = wrap.offsetWidth;
+  canvas.height = 140;
+
+  sigPad = new SignaturePad(canvas, {
+    penColor: '#1A0F05',
+    minWidth: 1, maxWidth: 3,
+  });
+
+  sigPad.addEventListener('beginStroke', () => {
+    document.getElementById('sig-hint').style.opacity = '0';
+  });
+
+  // Set date
+  document.getElementById('date-sig').value =
+    new Date().toLocaleDateString('fr-FR', { day:'2-digit', month:'long', year:'numeric' });
+});
+
+function clearSig() {
+  sigPad.clear();
+  document.getElementById('sig-hint').style.opacity = '1';
+}
+
+// ═══ Navigation ════════════════════════════════════════════════════════════
+let currentStep = 1;
+
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  if (n === 3) buildRecap();
+
+  document.getElementById(`step${currentStep}`).classList.remove('active');
+  document.getElementById(`step${n}`).classList.add('active');
+
+  // Update progress dots
+  for (let i = 1; i <= 3; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    const lbl = document.getElementById(`lbl-${i}`);
+    dot.className = 'dot' + (i < n ? ' done' : i === n ? ' active' : '');
+    lbl.className = 'label' + (i === n ? ' active' : '');
+    if (i < n) dot.textContent = '✓';
+    else dot.textContent = i;
   }
 
-  function changeParcels(delta) {
-    const max = TERRAINS.total - TERRAINS.reserved;
-    parcelsCount = Math.max(1, Math.min(max, parcelsCount + delta));
-    document.getElementById('parcelsCount').textContent = parcelsCount;
-    const totalFCFA = (parcelsCount * PRICE_FCFA).toLocaleString('fr-FR');
-    const totalEUR = (parcelsCount * PRICE_EUR).toLocaleString('fr-FR');
-    document.getElementById('parcelsTotal').textContent =
-      'Total : ' + totalFCFA + ' FCFA (≈ ' + totalEUR + ' €)';
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══ Validation ══════════════════════════════════════════════════════════
+function validateStep(step) {
+  clearErrors();
+  let ok = true;
+
+  if (step === 1) {
+    ok &= req('civilite'); ok &= req('prenom'); ok &= req('nom');
+    ok &= req('nationalite'); ok &= req('pays_residence');
+    ok &= req('email'); ok &= req('email2'); ok &= req('whatsapp');
+
+    const e1 = val('email'), e2 = val('email2');
+    if (e1 && e2 && e1 !== e2) {
+      setError('email2', 'Les adresses email ne correspondent pas');
+      ok = false;
+    }
+    if (e1 && !e1.includes('@')) { setError('email', 'Email invalide'); ok = false; }
   }
 
-  // Progress bar animation on scroll
-  const progressObs = new IntersectionObserver((entries) => {
-    entries.forEach(entry => { if (entry.isIntersecting) updateCounter(); });
-  }, { threshold: 0.3 });
-  const pw = document.querySelector('.progress-wrapper');
-  if (pw) progressObs.observe(pw);
+  if (step === 2) {
+    if (!document.querySelector('input[name="objectif"]:checked')) {
+      alert('Veuillez sélectionner votre objectif principal.'); ok = false;
+    }
+  }
 
-  // Form submission
-  const form = document.getElementById('reservationForm');
-  if (form) {
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const nom = document.getElementById('nom').value.trim();
-      const prenom = document.getElementById('prenom').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const telephone = document.getElementById('telephone').value.trim();
-      const pays = document.getElementById('pays').value;
-      const message = document.getElementById('message').value.trim();
-      const consent = document.getElementById('consent').checked;
+  return ok;
+}
 
-      let valid = true;
-      [nom, prenom, email, telephone].forEach(v => { if (!v) valid = false; });
-      if (!pays) valid = false;
-      if (!consent) valid = false;
-      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) valid = false;
+function req(id) {
+  const el = document.getElementById(id);
+  if (!el.value.trim()) { setError(id, 'Ce champ est requis'); return false; }
+  return true;
+}
+function val(id) { return document.getElementById(id).value.trim(); }
+function setError(id, msg) {
+  const el = document.getElementById(id);
+  el.classList.add('error');
+  const e = document.createElement('div');
+  e.className = 'field-error'; e.textContent = msg;
+  el.parentNode.appendChild(e);
+}
+function clearErrors() {
+  document.querySelectorAll('.field-error').forEach(e => e.remove());
+  document.querySelectorAll('.error').forEach(e => e.classList.remove('error'));
+}
 
-      if (!valid) {
-        alert('Veuillez remplir tous les champs obligatoires et accepter la politique de confidentialité.');
-        return;
-      }
+// ═══ Récapitulatif ════════════════════════════════════════════════════════
+function buildRecap() {
+  const rows = [
+    ['Civilité', val('civilite')],
+    ['Prénom', val('prenom')],
+    ['Nom', val('nom')],
+    ['Date de naissance', val('ddn')],
+    ['Nationalité', val('nationalite')],
+    ['Pays de résidence', val('pays_residence')],
+    ['Adresse', val('adresse')],
+    ['Email', val('email')],
+    ['WhatsApp', val('whatsapp')],
+    ['Téléphone FR/EU', val('tel_fr')],
+    ['Téléphone SN', val('tel_sn')],
+    ['Contact préféré', radioVal('contact_pref')],
+    ['Objectif', radioVal('objectif')],
+    ['Parcelles souhaitées', val('nb_parcelles')],
+    ['Budget', val('budget')],
+    ['Horizon d\'achat', radioVal('horizon')],
+    ['Financement', radioVal('financement')],
+    ['Source', radioVal('source')],
+    ['Questions', val('questions')],
+  ];
 
-      const data = { nom, prenom, email, telephone, pays, parcelles: parcelsCount, message };
-      console.log('Réservation:', data);
+  let html = '<table style="width:100%;border-collapse:collapse;">';
+  rows.forEach(([k, v]) => {
+    if (!v) return;
+    html += `<tr>
+      <td style="padding:4px 8px 4px 0;font-weight:500;color:var(--gold-dk);white-space:nowrap;vertical-align:top;font-size:.82rem;">${k}</td>
+      <td style="padding:4px 0;color:var(--text);font-size:.85rem;">${v}</td>
+    </tr>`;
+  });
+  html += '</table>';
+  document.getElementById('recap-box').innerHTML = html;
+}
 
-      TERRAINS.reserved += parcelsCount;
-      updateCounter();
+function radioVal(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : '';
+}
 
-      document.getElementById('successModal').classList.add('active');
-      form.reset();
-      parcelsCount = 1;
-      document.getElementById('parcelsCount').textContent = '1';
-      document.getElementById('parcelsTotal').textContent = 'Total : 1 500 000 FCFA (≈ 2 300 €)';
+// ═══ Generate PDF ═════════════════════════════════════════════════════════
+async function generatePDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+  const gold = [201, 164, 74];
+  const brown = [44, 26, 14];
+  const cream = [250, 245, 238];
+  const textDk = [26, 15, 5];
+  const textMd = [92, 61, 30];
+
+  const W = 210, H = 297;
+  let y = 0;
+
+  // Header band
+  doc.setFillColor(...brown);
+  doc.rect(0, 0, W, 28, 'F');
+  // Flag stripe top
+  doc.setFillColor(0, 146, 69);   doc.rect(0, 0, W/3, 4, 'F');
+  doc.setFillColor(239, 206, 58); doc.rect(W/3, 0, W/3, 4, 'F');
+  doc.setFillColor(206, 17, 38);  doc.rect(2*W/3, 0, W/3, 4, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(18); doc.setTextColor(...gold);
+  doc.text('BAOL REALTY', W/2, 16, { align: 'center' });
+  doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+  doc.setTextColor(232, 208, 154);
+  doc.text('FICHE D\'INTÉRÊT — PARCELLES MBORO, SÉNÉGAL', W/2, 22, { align: 'center' });
+
+  y = 34;
+
+  // Title
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(...brown);
+  doc.text('Formulaire d\'expression d\'intérêt', W/2, y, { align: 'center' });
+  y += 4;
+  doc.setDrawColor(...gold); doc.setLineWidth(0.8);
+  doc.line(30, y, W-30, y);
+  y += 8;
+
+  // Sections
+  const sections = [
+    ['A — Informations personnelles', [
+      ['Civilité',           val('civilite')],
+      ['Prénom',             val('prenom')],
+      ['Nom',                val('nom')],
+      ['Date de naissance',  val('ddn')],
+      ['Nationalité',        val('nationalite')],
+      ['Pays de résidence',  val('pays_residence')],
+      ['Adresse',            val('adresse')],
+    ]],
+    ['B — Coordonnées', [
+      ['Email',              val('email')],
+      ['WhatsApp',           val('whatsapp')],
+      ['Tél. FR / EU',       val('tel_fr')],
+      ['Tél. Sénégal',       val('tel_sn')],
+      ['Contact préféré',    radioVal('contact_pref')],
+    ]],
+    ['C — Projet immobilier', [
+      ['Objectif',           radioVal('objectif')],
+      ['Nb parcelles',       val('nb_parcelles')],
+      ['Budget',             val('budget')],
+      ['Horizon d\'achat',   radioVal('horizon')],
+      ['Financement',        radioVal('financement')],
+      ['Découvert via',      radioVal('source')],
+      ['Questions',          val('questions')],
+    ]],
+  ];
+
+  sections.forEach(([title, rows]) => {
+    // Section header
+    doc.setFillColor(...brown);
+    doc.roundedRect(14, y, W-28, 8, 2, 2, 'F');
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...gold);
+    doc.text(title, 20, y+5.5);
+    y += 12;
+
+    // Rows
+    rows.forEach(([k, v]) => {
+      if (!v) return;
+      doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...gold);
+      doc.text(k + ' :', 18, y);
+      doc.setFont('helvetica', 'normal'); doc.setTextColor(...textDk);
+      // Wrap long text
+      const lines = doc.splitTextToSize(v, 120);
+      lines.forEach((line, i) => doc.text(line, 70, y + i * 5));
+      y += lines.length * 5 + 1;
+      doc.setDrawColor(240, 232, 216); doc.setLineWidth(0.3);
+      doc.line(18, y, W-18, y);
+      y += 3;
     });
+    y += 4;
+  });
+
+  // Signature block
+  y += 4;
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(...brown);
+  doc.text('Signature :', 18, y);
+  doc.text(`Date : ${document.getElementById('date-sig').value}`, W-18, y, { align: 'right' });
+  y += 4;
+
+  // Draw signature image
+  if (!sigPad.isEmpty()) {
+    const sigData = sigPad.toDataURL('image/png');
+    doc.addImage(sigData, 'PNG', 18, y, 80, 28, '', 'FAST');
+    doc.setDrawColor(...gold); doc.setLineWidth(0.5);
+    doc.rect(18, y, 80, 28);
+  } else {
+    doc.setFillColor(...cream);
+    doc.rect(18, y, 80, 28, 'F');
+    doc.setDrawColor(...gold); doc.setLineWidth(0.5);
+    doc.rect(18, y, 80, 28);
+  }
+  y += 32;
+
+  // Disclaimer footer
+  doc.setFont('helvetica', 'italic'); doc.setFontSize(6.5); doc.setTextColor(...textMd);
+  const disc = '* Ce document est établi à titre informatif uniquement. Il ne constitue en aucun cas un contrat de vente, une promesse d\'achat, ni un engagement contractuel de quelque nature que ce soit, ni pour le signataire ni pour Baol Realty. Aucun montant n\'est exigible à ce stade. La réservation effective d\'une parcelle fera l\'objet d\'un acte distinct.';
+  const discLines = doc.splitTextToSize(disc, W-28);
+  discLines.forEach(line => { doc.text(line, 14, y); y += 4; });
+
+  // Bottom flag stripe
+  doc.setFillColor(0, 146, 69);   doc.rect(0, H-4, W/3, 4, 'F');
+  doc.setFillColor(239, 206, 58); doc.rect(W/3, H-4, W/3, 4, 'F');
+  doc.setFillColor(206, 17, 38);  doc.rect(2*W/3, H-4, W/3, 4, 'F');
+
+  return doc;
+}
+
+// ═══ Submit ═══════════════════════════════════════════════════════════════
+async function submitForm() {
+  clearErrors();
+
+  if (sigPad.isEmpty()) {
+    alert('Veuillez apposer votre signature avant de soumettre.'); return;
+  }
+  if (!document.getElementById('rgpd').checked) {
+    alert('Veuillez accepter la politique de confidentialité.'); return;
   }
 
-  function closeModal() {
-    document.getElementById('successModal').classList.remove('active');
+  document.getElementById('loading').classList.add('show');
+
+  try {
+    const pdf = await generatePDF();
+    const pdfB64 = pdf.output('datauristring').split(',')[1];
+    const nom = `${val('prenom')} ${val('nom')}`;
+
+    const templateParams = {
+      to_email:     val('email'),
+      to_name:      nom,
+      from_name:    'Baol Realty',
+      reply_to:     BAOL_EMAIL,
+      pays:         val('pays_residence'),
+      objectif:     radioVal('objectif'),
+      nb_parcelles: val('nb_parcelles'),
+      budget:       val('budget'),
+      whatsapp:     val('whatsapp'),
+      date_sig:     document.getElementById('date-sig').value,
+      pdf_base64:   pdfB64,
+    };
+
+    // Email to client
+    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, { ...templateParams, bcc_email: BAOL_EMAIL });
+
+    // Download PDF locally as backup
+    pdf.save(`Baol_Realty_Interet_${nom.replace(/\s+/g,'_')}.pdf`);
+
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('progress').style.display = 'none';
+    for (let i=1; i<=3; i++) document.getElementById(`step${i}`).classList.remove('active');
+    document.getElementById('success-screen').style.display = 'block';
+    document.getElementById('confirm-email-note').textContent = `📧 Confirmation envoyée à : ${val('email')}`;
+
+  } catch (err) {
+    document.getElementById('loading').classList.remove('show');
+    console.error(err);
+    // Fallback: just download PDF
+    const pdf = await generatePDF();
+    const nom = `${val('prenom')} ${val('nom')}`;
+    pdf.save(`Baol_Realty_Interet_${nom.replace(/\s+/g,'_')}.pdf`);
+    alert('⚠️ Le PDF a été téléchargé sur votre appareil. L\'envoi email n\'a pas pu être effectué (configuration EmailJS à compléter). Transmettez le PDF à baolrealty@gmail.com.');
   }
+}
 </script>
 
 </body>
