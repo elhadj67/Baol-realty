@@ -1063,25 +1063,53 @@ async function submitForm() {
     return;
   }
 
-  // 2 — Tenter l'envoi email (optionnel, ne bloque pas le succès)
+  // 2 — Envoi de deux emails séparés (client + Baol Realty)
   const emailConfigured = EMAILJS_PUBLIC_KEY !== 'VOTRE_PUBLIC_KEY';
+  let emailStatus = { client: false, baol: false };
+
   if (emailConfigured) {
+    const sharedParams = {
+      from_name:    'Baol Realty',
+      reply_to:     BAOL_EMAIL,
+      nom:          nom,
+      prenom:       val('prenom'),
+      telephone:    val('telephone'),
+      whatsapp:     val('whatsapp'),
+      pays:         val('pays_residence'),
+      objectif:     radioVal('objectif'),
+      nb_parcelles: val('nb_parcelles'),
+      budget:       val('budget'),
+      financement:  radioVal('financement'),
+      horizon:      radioVal('horizon'),
+      date_sig:     document.getElementById('date-sig').value,
+    };
+
+    // ── Email 1 : confirmation au demandeur ──────────────────────────
     try {
       await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_email:     val('email'),
-        to_name:      nom,
-        from_name:    'Baol Realty',
-        reply_to:     BAOL_EMAIL,
-        bcc_email:    BAOL_EMAIL,
-        pays:         val('pays_residence'),
-        objectif:     radioVal('objectif'),
-        nb_parcelles: val('nb_parcelles'),
-        budget:       val('budget'),
-        whatsapp:     val('whatsapp'),
-        date_sig:     document.getElementById('date-sig').value,
+        ...sharedParams,
+        to_email: val('email'),
+        to_name:  nom,
+        subject:  `Baol Realty — Confirmation de votre fiche d'intérêt`,
       });
-    } catch (emailErr) {
-      console.warn('Envoi email non bloquant:', emailErr);
+      emailStatus.client = true;
+      console.log('✅ Email client envoyé');
+    } catch (e) {
+      console.warn('⚠️ Email client non envoyé :', e);
+    }
+
+    // ── Email 2 : copie interne à Baol Realty ────────────────────────
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        ...sharedParams,
+        to_email: BAOL_EMAIL,
+        to_name:  'Équipe Baol Realty',
+        subject:  `Nouvelle fiche d'intérêt — ${nom} (${val('pays_residence')})`,
+      });
+      emailStatus.baol = true;
+      console.log('✅ Email Baol Realty envoyé');
+    } catch (e) {
+      console.warn('⚠️ Email Baol non envoyé :', e);
     }
   }
 
@@ -1090,9 +1118,21 @@ async function submitForm() {
   document.getElementById('progress').style.display = 'none';
   for (let i = 1; i <= 3; i++) document.getElementById(`step${i}`).classList.remove('active');
   document.getElementById('success-screen').style.display = 'block';
-  document.getElementById('confirm-email-note').textContent = emailConfigured
-    ? `📧 Confirmation envoyée à : ${val('email')}`
-    : `📥 Fiche PDF téléchargée · Envoyez-la à baolrealty@gmail.com`;
+
+  // Message de statut selon résultat des envois
+  let statusMsg;
+  if (!emailConfigured) {
+    statusMsg = `📥 Fiche PDF téléchargée · Envoyez-la à ${BAOL_EMAIL}`;
+  } else if (emailStatus.client && emailStatus.baol) {
+    statusMsg = `📧 Confirmation envoyée à ${val('email')} · Copie transmise à Baol Realty`;
+  } else if (emailStatus.client) {
+    statusMsg = `📧 Confirmation envoyée à ${val('email')} · (copie Baol Realty en attente)`;
+  } else if (emailStatus.baol) {
+    statusMsg = `📧 Dossier transmis à Baol Realty · (vérifiez votre email ${val('email')})`;
+  } else {
+    statusMsg = `📥 Fiche PDF téléchargée · En cas de problème, envoyez-la à ${BAOL_EMAIL}`;
+  }
+  document.getElementById('confirm-email-note').textContent = statusMsg;
 }
 </script>
 
