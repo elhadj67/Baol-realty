@@ -1121,10 +1121,10 @@ async function submitForm() {
     await sendFormSubmit(
       val('email'),
       "Baol Realty — Confirmation de votre fiche d'intérêt",
-      'Bonjour ' + nom + ',\n\n' +
-      'Nous avons bien reçu votre fiche d'intérêt. Un conseiller Baol Realty vous contactera sous 48h.\n\n' +
-      'Récapitulatif :\n\n' + recap +
-      '\n\nCordialement,\nL'équipe Baol Realty\n' + BAOL_EMAIL + '\nwww.baolrealty.com'
+      "Bonjour " + nom + ",\n\n" +
+      "Nous avons bien reçu votre fiche d'intérêt. Un conseiller Baol Realty vous contactera sous 48h.\n\n" +
+      "Récapitulatif :\n\n" + recap +
+      "\n\nCordialement,\nL'équipe Baol Realty\n" + BAOL_EMAIL + "\nwww.baolrealty.com"
     );
     emailClient = true;
     console.log('✅ Email client OK');
@@ -1137,7 +1137,7 @@ async function submitForm() {
     await sendFormSubmit(
       BAOL_EMAIL,
       'Nouvelle fiche — ' + nom + ' (' + val('pays_residence') + ')',
-      'Nouvelle fiche d'intérêt reçue.\n\n' + recap
+      "Nouvelle fiche d'intérêt reçue.\n\n" + recap
     );
     emailBaol = true;
     console.log('✅ Email Baol OK');
