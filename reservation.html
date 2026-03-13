@@ -1124,7 +1124,7 @@ async function submitForm() {
 
   // ── 3. Envoi emails ──────────────────────────────────────────────────
   setMsg('Envoi des emails…');
-  let emailBaol = false, emailClient = false;
+  let emailBaol = false, emailClient = false, emailJsError = "";
 
   // ── 3a. Notification Baol Realty via Web3Forms ───────────────────────
   try {
@@ -1163,19 +1163,25 @@ async function submitForm() {
       });
       emailClient = true;
       console.log('✅ Confirmation client envoyée');
-    } catch(e) { console.warn('EmailJS échoué:', e); }
+    } catch(e) {
+      console.error('EmailJS erreur complète:', e);
+      // Afficher l'erreur réelle dans le message de résultat
+      emailJsError = (e && e.text) ? e.text : (e && e.message) ? e.message : JSON.stringify(e);
+    }
   }
 
   // ── 4. Résultat ──────────────────────────────────────────────────────
   let msg;
   if (emailBaol && emailClient) {
     msg = '📧 Confirmation envoyée à ' + val('email') + ' · Baol Realty notifié ✓';
+  } else if (emailBaol && emailJsError) {
+    msg = '📬 Baol Realty notifié ✓ · Erreur client : ' + emailJsError;
   } else if (emailBaol) {
-    msg = '📬 Baol Realty notifié · ' + (ejsReady ? 'Vérifiez vos spams' : 'Configurez EmailJS pour la confirmation client');
+    msg = '📬 Baol Realty notifié · EmailJS non chargé';
   } else if (emailClient) {
     msg = '📧 Confirmation envoyée à ' + val('email') + ' · (Baol: vérifier clé Web3Forms)';
   } else {
-    msg = '📥 PDF téléchargé · Envoyez-le à ' + BAOL_EMAIL;
+    msg = '❌ Aucun email · W3F=' + (emailBaol?'OK':'KO') + ' EJS=' + (emailClient?'OK':'KO') + (emailJsError ? ' · ' + emailJsError : '');
   }
   showSuccess(msg);
 }
