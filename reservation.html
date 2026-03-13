@@ -764,7 +764,7 @@ input.error, select.error, textarea.error { border-color: var(--red); }
 // ═══ Configuration email ═════════════════════════════════════════════════
 // ─ Web3Forms : notification à Baol Realty ─────────────────────────────────
 // Clé liée à baolrealty@gmail.com → https://web3forms.com
-const WEB3FORMS_KEY = "VOTRE_CLE_WEB3FORMS";   // ← déjà configuré
+const WEB3FORMS_KEY = "b3128fb2-1f08-4c08-a374-c6a0b5e64a4a";
 
 // ─ EmailJS : confirmation au demandeur ────────────────────────────────────
 // Setup (5 min) :
@@ -776,9 +776,9 @@ const WEB3FORMS_KEY = "VOTRE_CLE_WEB3FORMS";   // ← déjà configuré
 //        Content    : {{message}}
 //      → copier Template ID
 //   4. Account → API Keys → copier Public Key
-const EMAILJS_SERVICE_ID  = "service_brvwcnp";   // ex: service_xxxxxxx
-const EMAILJS_TEMPLATE_ID = "template_0uty1ke";  // ex: template_xxxxxxx
-const EMAILJS_PUBLIC_KEY  = "pv-warhRjKlBOvEND";    // ex: xxxxxxxxxxxxxxx
+const EMAILJS_SERVICE_ID  = "service_brvwcnp";
+const EMAILJS_TEMPLATE_ID = "template_0uty1ke";
+const EMAILJS_PUBLIC_KEY  = "pv-warhRjKlBOvEND";
 
 const BAOL_EMAIL = "baolrealty@gmail.com";
 
@@ -1093,7 +1093,7 @@ async function submitForm() {
   // Envoi email via Web3Forms (gratuit, pas de CORS, pas d'activation requise)
   // → Créer une clé gratuite sur https://web3forms.com avec baolrealty@gmail.com
   // → Coller la clé dans WEB3FORMS_ACCESS_KEY ci-dessous
-  const WEB3FORMS_ACCESS_KEY = "VOTRE_CLE_ICI"; // ← coller la clé ici
+  const WEB3FORMS_ACCESS_KEY = "b3128fb2-1f08-4c08-a374-c6a0b5e64a4a";
 
   // ── 1. Générer le PDF ────────────────────────────────────────────────
   setMsg('Génération du PDF…');
@@ -1145,10 +1145,7 @@ async function submitForm() {
   } catch(e) { console.warn('Web3Forms échoué:', e); }
 
   // ── 3b. Confirmation client via EmailJS ──────────────────────────────
-  const ejsReady = typeof emailjs !== "undefined"
-                && EMAILJS_PUBLIC_KEY  !== "VOTRE_PUBLIC_KEY"
-                && EMAILJS_SERVICE_ID  !== "VOTRE_SERVICE_ID"
-                && EMAILJS_TEMPLATE_ID !== "VOTRE_TEMPLATE_ID";
+  const ejsReady = typeof emailjs !== "undefined";
 
   if (ejsReady) {
     try {
