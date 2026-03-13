@@ -13,6 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
 /* ── Reset & Variables ─────────────────────────────────────────────────── */
@@ -761,10 +762,30 @@ input.error, select.error, textarea.error { border-color: var(--red); }
 
 <script>
 // ═══ Configuration email ═════════════════════════════════════════════════
-// FormSubmit.co — aucune clé, aucun compte requis.
-// ⚠️ PREMIÈRE FOIS : FormSubmit envoie un email d'activation à baolrealty@gmail.com
-//    → ouvrir cet email et cliquer "Confirm your email" pour activer l'envoi.
+// ─ Web3Forms : notification à Baol Realty ─────────────────────────────────
+// Clé liée à baolrealty@gmail.com → https://web3forms.com
+const WEB3FORMS_KEY = "VOTRE_CLE_WEB3FORMS";   // ← déjà configuré
+
+// ─ EmailJS : confirmation au demandeur ────────────────────────────────────
+// Setup (5 min) :
+//   1. https://emailjs.com → créer compte gratuit
+//   2. Email Services → Add Service → Gmail → connecter baolrealty@gmail.com → copier Service ID
+//   3. Email Templates → Create Template :
+//        To email   : {{to_email}}
+//        Subject    : {{subject}}
+//        Content    : {{message}}
+//      → copier Template ID
+//   4. Account → API Keys → copier Public Key
+const EMAILJS_SERVICE_ID  = "service_brvwcnp";   // ex: service_xxxxxxx
+const EMAILJS_TEMPLATE_ID = "template_0uty1ke";  // ex: template_xxxxxxx
+const EMAILJS_PUBLIC_KEY  = "pv-warhRjKlBOvEND";    // ex: xxxxxxxxxxxxxxx
+
 const BAOL_EMAIL = "baolrealty@gmail.com";
+
+// Init EmailJS
+if (typeof emailjs !== "undefined") {
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+}
 
 // ═══ Signature Pad ═══════════════════════════════════════════════════════
 // Initialisé en lazy lors du passage à l'étape 3 (canvas masqué avant)
@@ -1072,29 +1093,7 @@ async function submitForm() {
   // Envoi email via Web3Forms (gratuit, pas de CORS, pas d'activation requise)
   // → Créer une clé gratuite sur https://web3forms.com avec baolrealty@gmail.com
   // → Coller la clé dans WEB3FORMS_ACCESS_KEY ci-dessous
-  const WEB3FORMS_ACCESS_KEY = "7022ce0b-ca46-43f1-8fc4-c8c2f5e7cc42"; // ← coller la clé ici
-
-  async function sendEmail(toEmail, subject, message) {
-    const payload = {
-      access_key:   WEB3FORMS_ACCESS_KEY,
-      subject:      subject,
-      from_name:    "Baol Realty",
-      email:        val('email'),
-      message:      message,
-      // Web3Forms envoie toujours à l'adresse liée à la clé (baolrealty@gmail.com)
-      // Pour envoyer au client aussi, on met son email dans "replyto"
-      replyto:      val('email'),
-      to_email:     toEmail,
-    };
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body:    JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.message);
-    return data;
-  }
+  const WEB3FORMS_ACCESS_KEY = "VOTRE_CLE_ICI"; // ← coller la clé ici
 
   // ── 1. Générer le PDF ────────────────────────────────────────────────
   setMsg('Génération du PDF…');
@@ -1107,12 +1106,10 @@ async function submitForm() {
     showSuccess('⚠️ Erreur PDF : ' + pdfErr.message + '. Rechargez et réessayez.');
     return;
   }
-  setMsg('Envoi des emails…');
 
-  // ── 2. Construire le récapitulatif ───────────────────────────────────
+  // ── 2. Récapitulatif ─────────────────────────────────────────────────
   const recap = [
     'Nom complet    : ' + nom,
-    'WhatsApp       : ' + val('whatsapp'),
     'WhatsApp       : ' + val('whatsapp'),
     'Email          : ' + val('email'),
     'Pays           : ' + val('pays_residence'),
@@ -1125,51 +1122,63 @@ async function submitForm() {
     'Date signature : ' + document.getElementById('date-sig').value,
   ].join('\n');
 
-  // ── 3. Envoyer les deux emails via FormSubmit.co ─────────────────────
-  // FormSubmit.co = aucune clé, aucun compte.
-  // PREMIÈRE utilisation : FormSubmit envoie un email de confirmation
-  // à baolrealty@gmail.com pour activer l'adresse — cliquer le lien.
-  let emailClient = false, emailBaol = false;
+  // ── 3. Envoi emails ──────────────────────────────────────────────────
+  setMsg('Envoi des emails…');
+  let emailBaol = false, emailClient = false;
 
-  // Email 1 → client
+  // ── 3a. Notification Baol Realty via Web3Forms ───────────────────────
   try {
-    await sendEmail(
-      val('email'),
-      "Baol Realty — Confirmation de votre fiche d'intérêt",
-      "Bonjour " + nom + ",\n\n" +
-      "Nous avons bien reçu votre fiche d'intérêt. Un conseiller Baol Realty vous contactera sous 48h.\n\n" +
-      "Récapitulatif :\n\n" + recap +
-      "\n\nCordialement,\nL'équipe Baol Realty\n" + BAOL_EMAIL + "\nwww.baolrealty.com"
-    );
-    emailClient = true;
-    console.log('✅ Email client OK');
-  } catch(e) {
-    console.warn('Email client échoué:', e);
+    const r = await fetch('https://api.web3forms.com/submit', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: WEB3FORMS_KEY,
+        subject:    "Nouvelle fiche — " + nom + " (" + val('pays_residence') + ")",
+        from_name:  "Baol Realty Site",
+        email:      val('email'),
+        message:    "Nouvelle fiche reçue.\n\n" + recap,
+      }),
+    });
+    const d = await r.json();
+    emailBaol = d.success;
+    console.log(d.success ? '✅ Baol Realty notifié' : '⚠️ Web3Forms: ' + d.message);
+  } catch(e) { console.warn('Web3Forms échoué:', e); }
+
+  // ── 3b. Confirmation client via EmailJS ──────────────────────────────
+  const ejsReady = typeof emailjs !== "undefined"
+                && EMAILJS_PUBLIC_KEY  !== "VOTRE_PUBLIC_KEY"
+                && EMAILJS_SERVICE_ID  !== "VOTRE_SERVICE_ID"
+                && EMAILJS_TEMPLATE_ID !== "VOTRE_TEMPLATE_ID";
+
+  if (ejsReady) {
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email: val('email'),
+        to_name:  nom,
+        subject:  "Baol Realty — Confirmation de votre fiche d'intérêt",
+        message:
+          "Bonjour " + nom + ",\n\n" +
+          "Nous avons bien reçu votre fiche d'intérêt. " +
+          "Un conseiller vous contactera sous 48h par WhatsApp ou email.\n\n" +
+          "Récapitulatif :\n\n" + recap +
+          "\n\nCordialement,\nL'équipe Baol Realty\n" +
+          BAOL_EMAIL + " · www.baolrealty.com",
+      });
+      emailClient = true;
+      console.log('✅ Confirmation client envoyée');
+    } catch(e) { console.warn('EmailJS échoué:', e); }
   }
 
-  // Email 2 → Baol Realty
-  try {
-    await sendEmail(
-      BAOL_EMAIL,
-      'Nouvelle fiche — ' + nom + ' (' + val('pays_residence') + ')',
-      "Nouvelle fiche d'intérêt reçue.\n\n" + recap
-    );
-    emailBaol = true;
-    console.log('✅ Email Baol OK');
-  } catch(e) {
-    console.warn('Email Baol échoué:', e);
-  }
-
-  // ── 4. Afficher le résultat ──────────────────────────────────────────
+  // ── 4. Résultat ──────────────────────────────────────────────────────
   let msg;
-  if (emailClient && emailBaol) {
-    msg = '📧 Confirmation envoyée à ' + val('email') + ' · Baol Realty notifié';
-  } else if (emailClient) {
-    msg = '📧 Confirmation envoyée à ' + val('email');
+  if (emailBaol && emailClient) {
+    msg = '📧 Confirmation envoyée à ' + val('email') + ' · Baol Realty notifié ✓';
   } else if (emailBaol) {
-    msg = '📧 Baol Realty notifié · Vérifiez aussi votre boîte ' + val('email');
+    msg = '📬 Baol Realty notifié · ' + (ejsReady ? 'Vérifiez vos spams' : 'Configurez EmailJS pour la confirmation client');
+  } else if (emailClient) {
+    msg = '📧 Confirmation envoyée à ' + val('email') + ' · (Baol: vérifier clé Web3Forms)';
   } else {
-    msg = '📥 PDF téléchargé · Envoyez-le à ' + BAOL_EMAIL + ' si nécessaire';
+    msg = '📥 PDF téléchargé · Envoyez-le à ' + BAOL_EMAIL;
   }
   showSuccess(msg);
 }
