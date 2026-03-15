@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mon Espace — Baol Realty</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --gold:#B8892E;--gold-lt:#D4A843;--gold-pale:#F5E6C8;--gold-xp:#FDF8EE;
+  --earth:#3A2A1C;--earth-lt:#5A4434;
+  --bg:#F9F6F0;--white:#FFFFFF;--text:#2A2A2A;--text-lt:#6B6B6B;--muted:#9E9E9E;
+  --green:#00853F;--green-p:#E8F5ED;--red:#E31B23;--red-p:#FEF0F0;
+  --orange:#E65100;--orange-p:#FFF3E0;--blue:#1B6B93;--blue-p:#EAF4FB;
+  --border:#E8E2D8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN / MAGIC LINK */
+.auth-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;background:var(--earth);padding:20px;
+}
+.auth-box{
+  background:var(--white);border-radius:10px;padding:48px;
+  width:100%;max-width:420px;text-align:center;
+  box-shadow:0 32px 80px rgba(0,0,0,.35);
+}
+.auth-brand{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:var(--earth);letter-spacing:3px;}
+.auth-brand span{color:var(--gold);}
+.auth-tagline{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin:6px 0 36px;}
+.auth-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--earth);margin-bottom:8px;}
+.auth-sub{font-size:13px;color:var(--text-lt);margin-bottom:28px;line-height:1.6;}
+.auth-input{
+  width:100%;border:1.5px solid var(--border);border-radius:4px;
+  padding:13px 16px;font-size:14px;font-family:'DM Sans',sans-serif;
+  margin-bottom:12px;outline:none;transition:border .2s;
+}
+.auth-input:focus{border-color:var(--gold);}
+.auth-btn{
+  width:100%;background:var(--earth);color:var(--gold-pale);
+  border:none;border-radius:4px;padding:14px;font-size:14px;
+  font-weight:600;cursor:pointer;transition:.2s;letter-spacing:.3px;
+}
+.auth-btn:hover{background:var(--earth-lt);}
+.auth-msg{font-size:13px;margin-top:12px;line-height:1.6;}
+.auth-msg.success{color:var(--green);}
+.auth-msg.error{color:var(--red);}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:12px;}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* LOADING */
+.loading-screen{display:none;align-items:center;justify-content:center;min-height:100vh;background:var(--bg);}
+.spinner{width:36px;height:36px;border:3px solid var(--gold-pale);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* APP */
+#app{display:none;}
+
+/* NAV */
+.nav{background:var(--earth);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.nav-brand{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--gold-lt);letter-spacing:1.5px;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-user{font-size:13px;color:rgba(255,255,255,.55);}
+.nav-user strong{color:var(--gold-pale);}
+.signout-btn{font-size:12px;color:rgba(255,255,255,.4);cursor:pointer;background:none;border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;transition:.2s;}
+.signout-btn:hover{color:white;border-color:rgba(255,255,255,.35);}
+
+/* DRAPEAU */
+.flag{display:flex;height:4px;}
+.flag .g{flex:1;background:#00853F;}
+.flag .y{flex:1;background:#FDDA24;}
+.flag .r{flex:1;background:#E31B23;}
+
+/* MAIN */
+.main{max-width:840px;margin:0 auto;padding:32px 20px;}
+
+/* HERO CARD */
+.hero-card{
+  background:var(--earth);border-radius:10px;padding:28px 32px;
+  margin-bottom:24px;position:relative;overflow:hidden;
+}
+.hero-card::before{
+  content:'';position:absolute;right:-40px;top:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:rgba(184,137,46,.08);
+}
+.hero-card::after{
+  content:'';position:absolute;right:20px;bottom:-30px;
+  width:120px;height:120px;border-radius:50%;
+  background:rgba(184,137,46,.05);
+}
+.hero-greeting{font-size:12px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;}
+.hero-name{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;color:var(--white);margin-bottom:2px;}
+.hero-name strong{color:var(--gold-lt);}
+.hero-sub{font-size:13px;color:rgba(255,255,255,.45);margin-bottom:24px;}
+.hero-stats{display:flex;gap:24px;flex-wrap:wrap;}
+.hero-stat{}
+.hero-stat-val{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--gold-lt);}
+.hero-stat-lbl{font-size:11px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;}
+
+/* BADGES */
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.badge-actif{background:var(--green-p);color:var(--green);}
+.badge-solde{background:#E3F2FD;color:#1565C0;}
+.badge-attente{background:var(--orange-p);color:var(--orange);}
+.badge-caduque{background:var(--red-p);color:var(--red);}
+.badge-cash{background:var(--gold-pale);color:var(--earth-lt);}
+.badge-echelonne{background:var(--blue-p);color:var(--blue);}
+
+/* SECTION CARD */
+.section-card{background:var(--white);border-radius:8px;border:1px solid var(--border);margin-bottom:16px;overflow:hidden;}
+.section-card-header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.section-card-title{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--earth);}
+.section-card-body{padding:20px 24px;}
+
+/* PROGRESS GLOBAL */
+.big-progress{margin-bottom:24px;}
+.big-progress-header{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.big-progress-label{font-size:13px;color:var(--text-lt);}
+.big-progress-pct{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--earth);}
+.big-bar{height:10px;background:#EDE8DF;border-radius:5px;overflow:hidden;}
+.big-fill{height:100%;background:linear-gradient(90deg,var(--earth),var(--gold));border-radius:5px;transition:width .6s ease;}
+.big-progress-sub{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--muted);}
+
+/* ECHÉANCIER */
+.echeancier{display:flex;flex-direction:column;gap:0;}
+.ech-row{
+  display:flex;align-items:center;gap:12px;padding:12px 0;
+  border-bottom:1px solid var(--border);
+}
+.ech-row:last-child{border-bottom:none;}
+.ech-dot{
+  width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;
+}
+.ech-dot.paye{background:var(--green);color:white;}
+.ech-dot.retard{background:var(--red);color:white;}
+.ech-dot.en_attente{background:var(--border);color:var(--muted);}
+.ech-dot.prochain{background:var(--gold);color:white;box-shadow:0 2px 8px rgba(184,137,46,.4);}
+.ech-info{flex:1;}
+.ech-name{font-size:13px;font-weight:500;}
+.ech-date{font-size:11px;color:var(--muted);}
+.ech-amount{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--earth);white-space:nowrap;}
+.ech-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;}
+.ech-badge.paye{background:var(--green-p);color:var(--green);}
+.ech-badge.retard{background:var(--red-p);color:var(--red);}
+.ech-badge.en_attente{background:var(--border);color:var(--muted);}
+.ech-badge.prochain{background:var(--gold-pale);color:var(--earth-lt);}
+
+/* INFOS GRID */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.info-item{}
+.info-key{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:2px;}
+.info-val{font-size:14px;font-weight:500;color:var(--text);}
+
+/* PROCHAINE ÉCHÉANCE HIGHLIGHT */
+.next-ech-card{
+  background:var(--gold-xp);border:1.5px solid var(--gold-pale);
+  border-radius:8px;padding:16px 20px;display:flex;align-items:center;gap:16px;
+  margin-bottom:16px;
+}
+.next-ech-icon{font-size:28px;}
+.next-ech-info{flex:1;}
+.next-ech-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--gold);margin-bottom:2px;}
+.next-ech-val{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--earth);}
+.next-ech-sub{font-size:12px;color:var(--text-lt);}
+
+/* CONTRAT */
+.contrat-box{
+  background:var(--bg);border:1px dashed var(--border);
+  border-radius:6px;padding:20px;text-align:center;
+}
+.contrat-icon{font-size:32px;margin-bottom:8px;}
+.contrat-text{font-size:13px;color:var(--text-lt);margin-bottom:12px;}
+.dl-btn{
+  display:inline-block;background:var(--earth);color:var(--gold-pale);
+  border:none;border-radius:4px;padding:10px 20px;font-size:13px;
+  font-weight:600;cursor:pointer;text-decoration:none;transition:.2s;
+}
+.dl-btn:hover{background:var(--earth-lt);}
+
+/* RETARD ALERT */
+.alert-retard{
+  background:var(--red-p);border:1.5px solid #FFCDD2;border-radius:6px;
+  padding:14px 18px;display:flex;gap:12px;align-items:flex-start;margin-bottom:16px;
+}
+.alert-retard-icon{font-size:20px;flex-shrink:0;}
+.alert-retard-text{font-size:13px;color:var(--red);line-height:1.6;}
+.alert-retard-text strong{font-weight:700;}
+
+@media(max-width:600px){
+  .hero-stats{gap:16px;}
+  .info-grid{grid-template-columns:1fr;}
+  .main{padding:20px 16px;}
+  .section-card-body{padding:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ AUTH ══════════════════════════════════════════════════════ -->
+<div class="auth-screen" id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-brand">BAOL <span>REALTY</span></div>
+    <div class="auth-tagline">Mon Espace Acquéreur</div>
+
+    <div id="auth-step-email">
+      <div class="auth-title">Accéder à mon espace</div>
+      <div class="auth-sub">Entrez votre email pour recevoir un lien d'accès sécurisé.</div>
+      <input class="auth-input" type="email" id="auth-email" placeholder="votre@email.com" onkeydown="if(event.key==='Enter')sendMagicLink()"/>
+      <button class="auth-btn" onclick="sendMagicLink()">Recevoir mon lien d'accès →</button>
+      <div class="auth-msg" id="auth-msg"></div>
+    </div>
+
+    <div id="auth-step-sent" style="display:none;">
+      <div style="font-size:40px;margin-bottom:16px;">📧</div>
+      <div class="auth-title">Email envoyé !</div>
+      <div class="auth-sub">Vérifiez votre boîte mail et cliquez sur le lien pour accéder à votre espace.<br><br>Le lien est valable <strong>1 heure</strong>.</div>
+      <button class="auth-btn" style="margin-top:20px;" onclick="document.getElementById('auth-step-sent').style.display='none';document.getElementById('auth-step-email').style.display='block'">← Modifier l'email</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOADING ═════════════════════════════════════════════════════ -->
+<div class="loading-screen" id="loading-screen" style="display:flex;">
+  <div class="spinner"></div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════════════ -->
+<div id="app">
+  <div class="flag"><div class="g"></div><div class="y"></div><div class="r"></div></div>
+  <div class="nav">
+    <div class="nav-brand">BAOL REALTY</div>
+    <div class="nav-right">
+      <div class="nav-user">Bonjour, <strong id="nav-prenom">—</strong></div>
+      <button class="signout-btn" onclick="signOut()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="main" id="main-content">
+    <!-- Contenu injecté par JS -->
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════════
+const SUPABASE_URL    = "https://vzmpkzuvyrkudxvfznnm.supabase.co";
+const SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bXBrenV2eXJrdWR4dmZ6bm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NDIxODUsImV4cCI6MjA4OTAxODE4NX0.a5G03r7X2ce0IWO2QlkWouxX0noq3Vo6S3tTkzahDd4";
+
+
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// ══ AUTH FLOW ════════════════════════════════════════════════════
+async function sendMagicLink() {
+  const email = document.getElementById('auth-email').value.trim();
+  const msg   = document.getElementById('auth-msg');
+  if (!email || !email.includes('@')) { msg.textContent = 'Email invalide.'; msg.className='auth-msg error'; return; }
+
+  msg.textContent = 'Envoi en cours…'; msg.className = 'auth-msg';
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: { emailRedirectTo: window.location.href }
+  });
+  if (error) { msg.textContent = error.message; msg.className='auth-msg error'; return; }
+  document.getElementById('auth-step-email').style.display = 'none';
+  document.getElementById('auth-step-sent').style.display  = 'block';
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+// ══ INIT ══════════════════════════════════════════════════════════
+async function init() {
+  // Handle magic link token in URL
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (!session) {
+    document.getElementById('loading-screen').style.display = 'none';
+    document.getElementById('auth-screen').style.display    = 'flex';
+    return;
+  }
+
+  // Logged in — load dossier
+  const email = session.user.email;
+  const { data, error } = await sb
+    .from('souscriptions')
+    .select('*, echeances(*)')
+    .eq('email', email)
+    .single();
+
+  document.getElementById('loading-screen').style.display = 'none';
+
+  if (error || !data) {
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('auth-step-email').innerHTML =
+      '<div style="text-align:center;padding:20px;"><div style="font-size:32px;margin-bottom:12px;">😕</div><div style="font-size:14px;color:var(--text-lt);">Aucun dossier trouvé pour cet email.<br>Contactez Baol Realty : baolrealty@gmail.com</div></div>';
+    return;
+  }
+
+  renderApp(data, session);
+}
+
+// ══ RENDER ════════════════════════════════════════════════════════
+function renderApp(r, session) {
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('nav-prenom').textContent = r.prenom;
+
+  const echeances = (r.echeances || []).sort((a, b) => a.numero - b.numero);
+  const pct       = Math.round(((r.montant_paye || 0) / (r.montant_total || 1500000)) * 100);
+  const nextEch   = echeances.find(e => e.statut === 'en_attente');
+  const retards   = echeances.filter(e => e.statut === 'retard');
+
+  document.getElementById('main-content').innerHTML = `
+
+    <!-- HERO -->
+    <div class="hero-card">
+      <div class="hero-greeting">Mon espace acquéreur</div>
+      <div class="hero-name">Bonjour, <strong>${r.prenom} ${r.nom}</strong></div>
+      <div class="hero-sub">Parcelle à Mboro · Petite Côte · Sénégal</div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-val">${pct}%</div>
+          <div class="hero-stat-lbl">Progression</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">${(r.montant_paye||0).toLocaleString('fr-FR')}</div>
+          <div class="hero-stat-lbl">FCFA payés</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">${((r.montant_total||1500000)-(r.montant_paye||0)).toLocaleString('fr-FR')}</div>
+          <div class="hero-stat-lbl">FCFA restants</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">${echeances.filter(e=>e.statut==='paye').length}/${echeances.length}</div>
+          <div class="hero-stat-lbl">Échéances payées</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALERTE RETARD -->
+    ${retards.length ? `
+    <div class="alert-retard">
+      <div class="alert-retard-icon">⚠️</div>
+      <div class="alert-retard-text">
+        <strong>${retards.length} échéance${retards.length>1?'s':''} en retard.</strong>
+        Veuillez régulariser votre situation. Au-delà de 3 mensualités consécutives impayées, votre contrat devient caduque.<br>
+        Contactez-nous : <strong>baolrealty@gmail.com</strong> · <strong>+33 7 67 95 35 81</strong>
+      </div>
+    </div>` : ''}
+
+    <!-- PROCHAINE ÉCHÉANCE -->
+    ${nextEch ? `
+    <div class="next-ech-card">
+      <div class="next-ech-icon">📅</div>
+      <div class="next-ech-info">
+        <div class="next-ech-label">Prochaine échéance</div>
+        <div class="next-ech-val">${(nextEch.montant||0).toLocaleString('fr-FR')} FCFA</div>
+        <div class="next-ech-sub">${nextEch.numero === 0 ? 'Acompte de réservation (30%)' : 'Mensualité n°' + nextEch.numero} · ${nextEch.date_echeance ? new Date(nextEch.date_echeance).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}) : '—'}</div>
+      </div>
+      <div>
+        <span class="badge badge-attente" style="font-size:12px;">À régler</span>
+      </div>
+    </div>` : (pct>=100 ? `
+    <div style="background:var(--green-p);border:1.5px solid #C8E6C9;border-radius:8px;padding:16px 20px;display:flex;gap:12px;align-items:center;margin-bottom:16px;">
+      <div style="font-size:28px;">🏆</div>
+      <div>
+        <div style="font-weight:700;color:var(--green);font-size:15px;">Félicitations — Paiement soldé !</div>
+        <div style="font-size:13px;color:var(--text-lt);margin-top:2px;">Votre dossier est complet. Baol Realty vous contactera pour la remise de votre délibération communale.</div>
+      </div>
+    </div>` : '') }
+
+    <!-- SOUSCRIPTION -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="section-card-title">Ma souscription</div>
+        <div style="display:flex;gap:8px;">
+          <span class="badge badge-${r.statut}">${statutLabel(r.statut)}</span>
+          <span class="badge badge-${r.type_paiement==='comptant'?'cash':'echelonne'}">${r.type_paiement==='comptant'?'Comptant':'Échelonné'}</span>
+        </div>
+      </div>
+      <div class="section-card-body">
+        <!-- Barre de progression -->
+        <div class="big-progress">
+          <div class="big-progress-header">
+            <span class="big-progress-label">Progression du paiement</span>
+            <span class="big-progress-pct">${pct}%</span>
+          </div>
+          <div class="big-bar"><div class="big-fill" style="width:${pct}%"></div></div>
+          <div class="big-progress-sub">
+            <span>${(r.montant_paye||0).toLocaleString('fr-FR')} FCFA payés</span>
+            <span>${(r.montant_total||1500000).toLocaleString('fr-FR')} FCFA total</span>
+          </div>
+        </div>
+        <div class="info-grid">
+          <div class="info-item"><div class="info-key">Parcelle</div><div class="info-val">225 m² · Mboro, Sénégal</div></div>
+          <div class="info-item"><div class="info-key">Date d'inscription</div><div class="info-val">${new Date(r.created_at).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'})}</div></div>
+          <div class="info-item"><div class="info-key">Montant total</div><div class="info-val" style="font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;">${(r.montant_total||1500000).toLocaleString('fr-FR')} FCFA</div></div>
+          <div class="info-item"><div class="info-key">Équivalent</div><div class="info-val">≈ 2 300 €</div></div>
+          <div class="info-item"><div class="info-key">Objectif</div><div class="info-val">${r.objectif||'—'}</div></div>
+          <div class="info-item"><div class="info-key">Financement</div><div class="info-val">${r.financement||'—'}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ÉCHÉANCIER -->
+    ${echeances.length ? `
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="section-card-title">Échéancier de paiement</div>
+        <span style="font-size:12px;color:var(--muted);">${echeances.filter(e=>e.statut==='paye').length} / ${echeances.length} réglées</span>
+      </div>
+      <div class="section-card-body" style="padding:0 24px;">
+        <div class="echeancier">
+          ${echeances.map(e => {
+            const isNext = nextEch && e.id === nextEch.id;
+            const dotClass = isNext ? 'prochain' : e.statut;
+            return `
+            <div class="ech-row">
+              <div class="ech-dot ${dotClass}">${e.statut==='paye'?'✓':e.numero===0?'A':e.numero}</div>
+              <div class="ech-info">
+                <div class="ech-name">${e.numero===0?'Acompte de réservation (30%)':'Mensualité n°'+e.numero}</div>
+                <div class="ech-date">${e.date_echeance?new Date(e.date_echeance).toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'}):'—'}</div>
+              </div>
+              <div class="ech-amount">${(e.montant||0).toLocaleString('fr-FR')} <span style="font-size:11px;opacity:.5">FCFA</span></div>
+              <span class="ech-badge ${isNext?'prochain':e.statut}">${isNext?'À venir':e.statut==='paye'?'✅ Payé':e.statut==='retard'?'⚠️ Retard':'En attente'}</span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>` : ''}
+
+    <!-- CONTRAT & DOCUMENTS -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="section-card-title">Mes documents</div>
+      </div>
+      <div class="section-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="contrat-box">
+            <div class="contrat-icon">📄</div>
+            <div class="contrat-text">Contrat de réservation<br><span style="font-size:11px;color:var(--muted);">${r.statut!=='en_attente'?'Disponible':'En attente de validation'}</span></div>
+            ${r.statut!=='en_attente'?`<a class="dl-btn" href="#" onclick="alert('Document disponible après contact avec votre conseiller.')">Télécharger</a>`:`<span style="font-size:11px;color:var(--muted);">Sera disponible dès activation</span>`}
+          </div>
+          <div class="contrat-box">
+            <div class="contrat-icon">🏛️</div>
+            <div class="contrat-text">Délibération communale<br><span style="font-size:11px;color:var(--muted);">${pct>=100?'En cours de traitement (3 mois)':'Remise après solde complet'}</span></div>
+            ${pct>=100?`<span style="font-size:11px;color:var(--orange);font-weight:600;">En préparation · 3 mois</span>`:`<span style="font-size:11px;color:var(--muted);">À ${(r.montant_total||1500000)-(r.montant_paye||0)>0?(((r.montant_total||1500000)-(r.montant_paye||0)).toLocaleString('fr-FR')+' FCFA du solde'):'disponible'}</span>`}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFOS PERSONNELLES -->
+    <div class="section-card">
+      <div class="section-card-header">
+        <div class="section-card-title">Mes informations</div>
+      </div>
+      <div class="section-card-body">
+        <div class="info-grid">
+          <div class="info-item"><div class="info-key">Nom complet</div><div class="info-val">${r.prenom} ${r.nom}</div></div>
+          <div class="info-item"><div class="info-key">Email</div><div class="info-val">${r.email}</div></div>
+          <div class="info-item"><div class="info-key">WhatsApp</div><div class="info-val">${r.whatsapp||'—'}</div></div>
+          <div class="info-item"><div class="info-key">Pays de résidence</div><div class="info-val">${r.pays_residence||'—'}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <div style="text-align:center;padding:20px 0 8px;font-size:13px;color:var(--muted);">
+      Une question ? Contactez votre conseiller ·
+      <a href="mailto:baolrealty@gmail.com" style="color:var(--gold);">baolrealty@gmail.com</a> ·
+      <a href="https://wa.me/33767953581" style="color:var(--gold);">WhatsApp FR</a>
+    </div>
+  `;
+}
+
+function statutLabel(s) {
+  return {en_attente:'En attente',actif:'Actif',solde:'Soldé',caduque:'Caduque'}[s]||s;
+}
+
+// Start
+init();
+</script>
+</body>
+</html>
