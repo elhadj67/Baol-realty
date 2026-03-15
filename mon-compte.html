@@ -277,10 +277,27 @@ async function signOut() {
 
 // ══ INIT ══════════════════════════════════════════════════════════
 async function init() {
-  // Handle magic link token in URL
+  // 1. Si l'URL contient un token magic link (#access_token=...) le traiter d'abord
+  const hash = window.location.hash;
+  if (hash && hash.includes('access_token')) {
+    const { data, error } = await sb.auth.getSession();
+    if (!error && data.session) {
+      // Token valide — nettoyer l'URL sans recharger
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+
+  // 2. Vérifier la session
   const { data: { session } } = await sb.auth.getSession();
 
   if (!session) {
+    // Écouter les changements d'auth (cas où le token est traité de façon asynchrone)
+    sb.auth.onAuthStateChange((event, newSession) => {
+      if (event === 'SIGNED_IN' && newSession) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+        init();
+      }
+    });
     document.getElementById('loading-screen').style.display = 'none';
     document.getElementById('auth-screen').style.display    = 'flex';
     return;
