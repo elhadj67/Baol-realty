@@ -13,6 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
@@ -782,6 +783,13 @@ const EMAILJS_PUBLIC_KEY  = "pv-warhRjKlBOvEND";
 
 const BAOL_EMAIL = "baolrealty@gmail.com";
 
+// ─ Supabase — sauvegarde des dossiers ────────────────────────────────────
+const SUPABASE_URL    = "https://vzmpkzuvyrkudxvfznnm.supabase.co";
+const SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bXBrenV2eXJrdWR4dmZ6bm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NDIxODUsImV4cCI6MjA4OTAxODE4NX0.a5G03r7X2ce0IWO2QlkWouxX0noq3Vo6S3tTkzahDd4";
+const sb = (typeof supabase !== "undefined")
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON)
+  : null;
+
 // Init EmailJS
 if (typeof emailjs !== "undefined") {
   emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
@@ -1122,7 +1130,68 @@ async function submitForm() {
     'Date signature : ' + document.getElementById('date-sig').value,
   ].join('\n');
 
-  // ── 3. Envoi emails ──────────────────────────────────────────────────
+  // ── 3. Sauvegarder dans Supabase ────────────────────────────────────────
+  if (sb && SUPABASE_URL !== "VOTRE_SUPABASE_URL") {
+    try {
+      const rec = {
+        prenom:         val('prenom'),
+        nom:            val('nom'),
+        email:          val('email'),
+        whatsapp:       val('whatsapp'),
+        tel_fr:         val('tel_fr') || '',
+        tel_sn:         val('tel_sn') || '',
+        pays_residence: val('pays_residence'),
+        nationalite:    val('nationalite') || '',
+        adresse:        val('adresse') || '',
+        objectif:       radioVal('objectif'),
+        nb_parcelles:   val('nb_parcelles') || '',
+        budget:         val('budget') || '',
+        financement:    radioVal('financement'),
+        horizon:        radioVal('horizon'),
+        type_paiement:  radioVal('financement') === 'Comptant' ? 'comptant' : 'echelonne',
+        statut:         'en_attente',
+        montant_total:  1500000,
+        montant_paye:   0,
+        date_signature: document.getElementById('date-sig').value,
+      };
+
+      const { data: inserted, error: insertErr } = await sb
+        .from('souscriptions')
+        .upsert([rec], { onConflict: 'email' })
+        .select()
+        .single();
+
+      if (!insertErr && inserted) {
+        // Créer les échéances si paiement échelonné
+        if (rec.type_paiement === 'echelonne') {
+          const now = new Date();
+          const echs = [
+            { souscription_id: inserted.id, numero: 0, montant: 450000, statut: 'en_attente', date_echeance: now.toISOString().split('T')[0] },
+          ];
+          for (let m = 1; m <= 12; m++) {
+            const d = new Date(now); d.setMonth(d.getMonth() + m);
+            echs.push({ souscription_id: inserted.id, numero: m, montant: 87500, statut: 'en_attente', date_echeance: d.toISOString().split('T')[0] });
+          }
+          await sb.from('echeances').insert(echs);
+        }
+        // Envoyer magic link pour accès portail client
+        await sb.auth.signInWithOtp({
+          email: rec.email,
+          options: {
+            emailRedirectTo: window.location.origin + '/mon-compte.html',
+            shouldCreateUser: true,
+          }
+        });
+        console.log('✅ Dossier sauvegardé + accès client envoyé');
+      } else if (insertErr) {
+        console.warn('Supabase insert:', insertErr.message);
+      }
+    } catch(e) {
+      console.warn('Supabase erreur:', e);
+    }
+  }
+
+  // ── 4. Envoi emails ──────────────────────────────────────────────────
   setMsg('Envoi des emails…');
   let emailBaol = false, emailClient = false, emailJsError = "";
 
