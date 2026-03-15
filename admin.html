@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Baol Realty — Administration</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --gold:    #B8892E;
+  --gold-lt: #D4A843;
+  --gold-pale: #F5E6C8;
+  --gold-xp: #FDF8EE;
+  --earth:   #3A2A1C;
+  --earth-lt:#5A4434;
+  --bg:      #F9F6F0;
+  --white:   #FFFFFF;
+  --text:    #2A2A2A;
+  --text-lt: #6B6B6B;
+  --muted:   #9E9E9E;
+  --green:   #00853F;
+  --green-p: #E8F5ED;
+  --red:     #E31B23;
+  --red-p:   #FEF0F0;
+  --orange:  #E65100;
+  --orange-p:#FFF3E0;
+  --blue:    #1B6B93;
+  --blue-p:  #EAF4FB;
+  --border:  #E8E2D8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+#login-screen{
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;background:var(--earth);
+}
+.login-box{
+  background:var(--white);border-radius:8px;padding:48px 56px;
+  width:380px;text-align:center;
+  box-shadow:0 24px 64px rgba(0,0,0,.3);
+}
+.login-brand{
+  font-family:'Cormorant Garamond',serif;font-size:28px;
+  font-weight:700;color:var(--gold);letter-spacing:2px;margin-bottom:4px;
+}
+.login-sub{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:32px;}
+.login-box input{
+  width:100%;border:1.5px solid var(--border);border-radius:4px;
+  padding:12px 16px;font-size:14px;font-family:'DM Sans',sans-serif;
+  margin-bottom:12px;outline:none;transition:border .2s;
+}
+.login-box input:focus{border-color:var(--gold);}
+.login-btn{
+  width:100%;background:var(--earth);color:var(--gold-pale);
+  border:none;border-radius:4px;padding:14px;font-size:14px;
+  font-weight:600;cursor:pointer;letter-spacing:.5px;transition:background .2s;
+}
+.login-btn:hover{background:var(--earth-lt);}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;}
+
+/* LAYOUT */
+#app{display:none;}
+.topbar{
+  background:var(--earth);padding:0 32px;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.topbar-brand{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--gold-lt);letter-spacing:1.5px;}
+.topbar-right{display:flex;align-items:center;gap:16px;}
+.topbar-date{font-size:12px;color:rgba(255,255,255,.4);}
+.logout-btn{
+  font-size:12px;color:rgba(255,255,255,.5);cursor:pointer;
+  background:none;border:1px solid rgba(255,255,255,.15);
+  border-radius:20px;padding:4px 12px;transition:.2s;
+}
+.logout-btn:hover{color:white;border-color:rgba(255,255,255,.4);}
+
+.main{padding:32px;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:32px;}
+.stat-card{
+  background:var(--white);border-radius:8px;padding:20px 24px;
+  border:1px solid var(--border);
+}
+.stat-label{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--earth);line-height:1;}
+.stat-sub{font-size:12px;color:var(--text-lt);margin-top:4px;}
+.stat-card.gold{border-left:3px solid var(--gold);}
+.stat-card.green{border-left:3px solid var(--green);}
+.stat-card.blue{border-left:3px solid var(--blue);}
+.stat-card.orange{border-left:3px solid var(--orange);}
+
+/* FILTERS */
+.toolbar{
+  display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;
+}
+.toolbar-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--earth);flex:1;}
+.search-input{
+  border:1.5px solid var(--border);border-radius:4px;
+  padding:8px 14px;font-size:13px;font-family:'DM Sans',sans-serif;
+  outline:none;width:220px;transition:border .2s;
+}
+.search-input:focus{border-color:var(--gold);}
+.filter-select{
+  border:1.5px solid var(--border);border-radius:4px;
+  padding:8px 12px;font-size:13px;font-family:'DM Sans',sans-serif;
+  outline:none;background:var(--white);cursor:pointer;
+}
+.add-btn{
+  background:var(--earth);color:var(--gold-pale);border:none;
+  border-radius:4px;padding:9px 16px;font-size:13px;font-weight:600;
+  cursor:pointer;white-space:nowrap;transition:.2s;
+}
+.add-btn:hover{background:var(--earth-lt);}
+
+/* TABLE */
+.table-wrap{background:var(--white);border-radius:8px;border:1px solid var(--border);overflow:hidden;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{
+  background:var(--earth);color:var(--gold-pale);
+  padding:12px 16px;text-align:left;font-weight:600;
+  font-size:11px;text-transform:uppercase;letter-spacing:.8px;
+  white-space:nowrap;
+}
+tbody tr{border-bottom:1px solid var(--border);transition:background .15s;cursor:pointer;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--gold-xp);}
+td{padding:12px 16px;vertical-align:middle;}
+.td-name{font-weight:600;color:var(--earth);}
+.td-email{color:var(--text-lt);font-size:12px;}
+.td-pays{font-size:12px;color:var(--text-lt);}
+.td-amount{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;}
+.td-date{font-size:12px;color:var(--text-lt);}
+
+/* BADGES */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;}
+.badge-actif{background:var(--green-p);color:var(--green);}
+.badge-solde{background:#E3F2FD;color:#1565C0;}
+.badge-attente{background:var(--orange-p);color:var(--orange);}
+.badge-caduque{background:var(--red-p);color:var(--red);}
+.badge-cash{background:var(--gold-pale);color:var(--earth-lt);}
+.badge-echelonne{background:var(--blue-p);color:var(--blue);}
+
+/* PROGRESS BAR */
+.progress-wrap{display:flex;align-items:center;gap:8px;min-width:120px;}
+.progress-bar{flex:1;height:6px;background:#EDE8DF;border-radius:3px;overflow:hidden;}
+.progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .3s;}
+.progress-pct{font-size:11px;color:var(--muted);white-space:nowrap;}
+
+/* MODAL */
+.modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
+  z-index:200;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.show{display:flex;}
+.modal{
+  background:var(--white);border-radius:10px;width:100%;max-width:720px;
+  max-height:90vh;overflow-y:auto;
+  box-shadow:0 32px 80px rgba(0,0,0,.3);
+}
+.modal-header{
+  background:var(--earth);padding:24px 28px;display:flex;
+  align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:1;border-radius:10px 10px 0 0;
+}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold-pale);}
+.modal-close{background:none;border:none;color:rgba(255,255,255,.5);font-size:24px;cursor:pointer;line-height:1;}
+.modal-close:hover{color:white;}
+.modal-body{padding:28px;}
+
+.modal-section{margin-bottom:24px;}
+.modal-section-title{
+  font-size:11px;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--muted);margin-bottom:12px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.info-row{display:flex;gap:8px;align-items:baseline;}
+.info-key{font-size:12px;color:var(--text-lt);min-width:120px;flex-shrink:0;}
+.info-val{font-size:13px;font-weight:500;color:var(--text);}
+
+/* ECHÉANCIER */
+.echeancier{display:flex;flex-direction:column;gap:6px;}
+.echeance-row{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;
+  border-radius:4px;border:1px solid var(--border);
+  background:var(--bg);
+}
+.ech-num{font-size:11px;color:var(--muted);width:20px;text-align:center;}
+.ech-label{flex:1;font-size:13px;font-weight:500;}
+.ech-date{font-size:12px;color:var(--text-lt);}
+.ech-amount{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;min-width:80px;text-align:right;}
+.ech-status select{
+  font-size:11px;border:1px solid var(--border);border-radius:20px;
+  padding:3px 8px;background:var(--white);cursor:pointer;font-family:'DM Sans',sans-serif;
+}
+.echeance-row.paye{background:var(--green-p);border-color:#C8E6C9;}
+.echeance-row.retard{background:var(--red-p);border-color:#FFCDD2;}
+
+/* ACTIONS */
+.modal-actions{display:flex;gap:10px;padding:16px 28px;border-top:1px solid var(--border);}
+.btn-primary{background:var(--earth);color:var(--gold-pale);border:none;border-radius:4px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-primary:hover{background:var(--earth-lt);}
+.btn-secondary{background:var(--white);color:var(--text);border:1.5px solid var(--border);border-radius:4px;padding:10px 20px;font-size:13px;font-weight:500;cursor:pointer;transition:.2s;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);}
+.btn-danger{background:var(--red-p);color:var(--red);border:1.5px solid #FFCDD2;border-radius:4px;padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;}
+.btn-danger:hover{background:var(--red);color:white;}
+
+/* NOTES */
+.admin-note textarea{
+  width:100%;border:1.5px solid var(--border);border-radius:4px;
+  padding:10px;font-size:13px;font-family:'DM Sans',sans-serif;
+  resize:vertical;min-height:80px;outline:none;transition:border .2s;
+}
+.admin-note textarea:focus{border-color:var(--gold);}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:60px 20px;color:var(--muted);}
+.empty-icon{font-size:40px;margin-bottom:12px;}
+.empty-text{font-size:14px;}
+
+/* TOAST */
+#toast{
+  position:fixed;bottom:24px;right:24px;
+  background:var(--earth);color:var(--gold-pale);
+  padding:12px 20px;border-radius:6px;font-size:13px;
+  transform:translateY(80px);opacity:0;transition:.3s;z-index:300;
+}
+#toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:768px){
+  .main{padding:16px;}
+  .info-grid{grid-template-columns:1fr;}
+  .modal{border-radius:10px 10px 0 0;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══════════════════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-brand">BAOL REALTY</div>
+    <div class="login-sub">Administration</div>
+    <input type="password" id="pwd" placeholder="Mot de passe admin" onkeydown="if(event.key==='Enter')login()"/>
+    <button class="login-btn" onclick="login()">Accéder →</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<!-- ══ APP ════════════════════════════════════════════════════════ -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-brand">BAOL REALTY · Admin</div>
+    <div class="topbar-right">
+      <div class="topbar-date" id="topbar-date"></div>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Stats -->
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card gold"><div class="stat-label">Total souscripteurs</div><div class="stat-val" id="s-total">—</div></div>
+      <div class="stat-card green"><div class="stat-label">Montant encaissé</div><div class="stat-val" id="s-encaisse">—</div><div class="stat-sub">FCFA</div></div>
+      <div class="stat-card blue"><div class="stat-label">Dossiers actifs</div><div class="stat-val" id="s-actifs">—</div></div>
+      <div class="stat-card orange"><div class="stat-label">Retards de paiement</div><div class="stat-val" id="s-retards">—</div></div>
+    </div>
+
+    <!-- Table -->
+    <div class="toolbar">
+      <div class="toolbar-title">Souscripteurs</div>
+      <input class="search-input" type="text" id="search" placeholder="🔍 Rechercher…" oninput="filterTable()"/>
+      <select class="filter-select" id="filter-statut" onchange="filterTable()">
+        <option value="">Tous les statuts</option>
+        <option value="actif">Actif</option>
+        <option value="solde">Soldé</option>
+        <option value="en_attente">En attente</option>
+        <option value="caduque">Caduque</option>
+      </select>
+      <select class="filter-select" id="filter-type" onchange="filterTable()">
+        <option value="">Tous les types</option>
+        <option value="comptant">Comptant</option>
+        <option value="echelonne">Échelonné</option>
+      </select>
+      <button class="add-btn" onclick="openAddModal()">+ Ajouter manuellement</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Souscripteur</th>
+            <th>Type</th>
+            <th>Statut</th>
+            <th>Progression</th>
+            <th>Montant payé</th>
+            <th>Prochaine échéance</th>
+            <th>Inscription</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr><td colspan="7"><div class="empty"><div class="empty-icon">⏳</div><div class="empty-text">Chargement…</div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL DÉTAIL ════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Dossier</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// CONFIG — remplacer par vos valeurs Supabase
+// ══════════════════════════════════════════════════════════════════
+const SUPABASE_URL    = "https://vzmpkzuvyrkudxvfznnm.supabase.co";
+const SUPABASE_ANON   = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ6bXBrenV2eXJrdWR4dmZ6bm5tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NDIxODUsImV4cCI6MjA4OTAxODE4NX0.a5G03r7X2ce0IWO2QlkWouxX0noq3Vo6S3tTkzahDd4";
+const ADMIN_PASSWORD  = "Coliway67200..";   // ← changer ce mot de passe
+
+// ── Init Supabase ────────────────────────────────────────────────
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let allData = [];
+let currentId = null;
+
+// ══ LOGIN ════════════════════════════════════════════════════════
+function login() {
+  const pwd = document.getElementById('pwd').value;
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    loadData();
+  } else {
+    document.getElementById('login-err').textContent = 'Mot de passe incorrect';
+  }
+}
+function logout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('pwd').value = '';
+}
+
+// ══ DATA ══════════════════════════════════════════════════════════
+async function loadData() {
+  const { data, error } = await sb
+    .from('souscriptions')
+    .select('*, echeances(*)')
+    .order('created_at', { ascending: false });
+
+  if (error) { showToast('Erreur Supabase : ' + error.message); return; }
+  allData = data || [];
+  renderStats();
+  renderTable(allData);
+}
+
+function renderStats() {
+  document.getElementById('s-total').textContent = allData.length;
+  const encaisse = allData.reduce((s, r) => s + (r.montant_paye || 0), 0);
+  document.getElementById('s-encaisse').textContent = encaisse.toLocaleString('fr-FR');
+  document.getElementById('s-actifs').textContent = allData.filter(r => r.statut === 'actif').length;
+  const retards = allData.reduce((s, r) => s + (r.echeances || []).filter(e => e.statut === 'retard').length, 0);
+  document.getElementById('s-retards').textContent = retards;
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('table-body');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Aucun souscripteur pour l\'instant</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(r => {
+    const pct = r.montant_total ? Math.round((r.montant_paye / r.montant_total) * 100) : 0;
+    const nextEch = (r.echeances || []).find(e => e.statut === 'en_attente');
+    const nextDate = nextEch ? new Date(nextEch.date_echeance).toLocaleDateString('fr-FR', {day:'numeric',month:'short'}) : '—';
+    return `<tr onclick="openDetail('${r.id}')">
+      <td>
+        <div class="td-name">${r.prenom} ${r.nom}</div>
+        <div class="td-email">${r.email}</div>
+        <div class="td-pays">${r.pays_residence || ''}</div>
+      </td>
+      <td><span class="badge badge-${r.type_paiement === 'comptant' ? 'cash' : 'echelonne'}">${r.type_paiement === 'comptant' ? 'Comptant' : 'Échelonné'}</span></td>
+      <td><span class="badge badge-${r.statut}">${statutLabel(r.statut)}</span></td>
+      <td>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+          <span class="progress-pct">${pct}%</span>
+        </div>
+      </td>
+      <td class="td-amount">${(r.montant_paye || 0).toLocaleString('fr-FR')} <span style="font-size:11px;color:var(--muted)">FCFA</span></td>
+      <td class="td-date">${nextDate}</td>
+      <td class="td-date">${new Date(r.created_at).toLocaleDateString('fr-FR')}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTable() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const st = document.getElementById('filter-statut').value;
+  const ty = document.getElementById('filter-type').value;
+  const filtered = allData.filter(r => {
+    const matchQ = !q || `${r.prenom} ${r.nom} ${r.email} ${r.pays_residence}`.toLowerCase().includes(q);
+    const matchSt = !st || r.statut === st;
+    const matchTy = !ty || r.type_paiement === ty;
+    return matchQ && matchSt && matchTy;
+  });
+  renderTable(filtered);
+}
+
+// ══ DETAIL MODAL ══════════════════════════════════════════════════
+async function openDetail(id) {
+  currentId = id;
+  const r = allData.find(x => x.id === id);
+  if (!r) return;
+
+  const pct = r.montant_total ? Math.round((r.montant_paye / r.montant_total) * 100) : 0;
+  const echeances = (r.echeances || []).sort((a,b) => a.numero - b.numero);
+
+  document.getElementById('modal-title').textContent = `${r.prenom} ${r.nom}`;
+  document.getElementById('modal-body').innerHTML = `
+    <!-- Statut + progression -->
+    <div style="display:flex;gap:12px;align-items:center;margin-bottom:24px;padding:16px;background:var(--bg);border-radius:6px;">
+      <span class="badge badge-${r.statut}" style="font-size:13px;padding:6px 16px;">${statutLabel(r.statut)}</span>
+      <span class="badge badge-${r.type_paiement === 'comptant' ? 'cash' : 'echelonne'}">${r.type_paiement === 'comptant' ? 'Paiement comptant' : 'Paiement échelonné'}</span>
+      <div style="flex:1;"></div>
+      <div class="progress-wrap" style="min-width:160px;">
+        <div class="progress-bar" style="height:8px;"><div class="progress-fill" style="width:${pct}%;"></div></div>
+        <span class="progress-pct" style="font-size:13px;font-weight:600;color:var(--earth);">${pct}%</span>
+      </div>
+    </div>
+
+    <!-- Infos personnelles -->
+    <div class="modal-section">
+      <div class="modal-section-title">Identité & Contact</div>
+      <div class="info-grid">
+        <div class="info-row"><span class="info-key">Nom complet</span><span class="info-val">${r.prenom} ${r.nom}</span></div>
+        <div class="info-row"><span class="info-key">Email</span><span class="info-val">${r.email}</span></div>
+        <div class="info-row"><span class="info-key">WhatsApp</span><span class="info-val">${r.whatsapp || '—'}</span></div>
+        <div class="info-row"><span class="info-key">Pays</span><span class="info-val">${r.pays_residence || '—'}</span></div>
+        <div class="info-row"><span class="info-key">Date inscription</span><span class="info-val">${new Date(r.created_at).toLocaleDateString('fr-FR')}</span></div>
+        <div class="info-row"><span class="info-key">Date signature</span><span class="info-val">${r.date_signature || '—'}</span></div>
+      </div>
+    </div>
+
+    <!-- Projet -->
+    <div class="modal-section">
+      <div class="modal-section-title">Projet immobilier</div>
+      <div class="info-grid">
+        <div class="info-row"><span class="info-key">Objectif</span><span class="info-val">${r.objectif || '—'}</span></div>
+        <div class="info-row"><span class="info-key">Nb parcelles</span><span class="info-val">${r.nb_parcelles || '—'}</span></div>
+        <div class="info-row"><span class="info-key">Budget déclaré</span><span class="info-val">${r.budget || '—'}</span></div>
+        <div class="info-row"><span class="info-key">Financement</span><span class="info-val">${r.financement || '—'}</span></div>
+        <div class="info-row"><span class="info-key">Horizon d'achat</span><span class="info-val">${r.horizon || '—'}</span></div>
+      </div>
+    </div>
+
+    <!-- Financier -->
+    <div class="modal-section">
+      <div class="modal-section-title">Suivi financier</div>
+      <div class="info-grid">
+        <div class="info-row"><span class="info-key">Montant total</span><span class="info-val" style="font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:var(--earth);">${(r.montant_total||1500000).toLocaleString('fr-FR')} FCFA</span></div>
+        <div class="info-row"><span class="info-key">Montant payé</span><span class="info-val" style="color:var(--green);font-weight:600;">${(r.montant_paye||0).toLocaleString('fr-FR')} FCFA</span></div>
+        <div class="info-row"><span class="info-key">Reste à payer</span><span class="info-val" style="color:var(--orange);font-weight:600;">${((r.montant_total||1500000)-(r.montant_paye||0)).toLocaleString('fr-FR')} FCFA</span></div>
+      </div>
+    </div>
+
+    <!-- Changer statut -->
+    <div class="modal-section">
+      <div class="modal-section-title">Changer le statut</div>
+      <select id="edit-statut" style="border:1.5px solid var(--border);border-radius:4px;padding:8px 12px;font-family:'DM Sans',sans-serif;font-size:13px;width:200px;">
+        <option value="en_attente" ${r.statut==='en_attente'?'selected':''}>En attente</option>
+        <option value="actif" ${r.statut==='actif'?'selected':''}>Actif</option>
+        <option value="solde" ${r.statut==='solde'?'selected':''}>Soldé</option>
+        <option value="caduque" ${r.statut==='caduque'?'selected':''}>Caduque</option>
+      </select>
+    </div>
+
+    <!-- Échéancier -->
+    ${echeances.length ? `
+    <div class="modal-section">
+      <div class="modal-section-title">Échéancier de paiement</div>
+      <div class="echeancier" id="echeancier">
+        ${echeances.map(e => `
+        <div class="echeance-row ${e.statut}" id="ech-${e.id}">
+          <span class="ech-num">${e.numero === 0 ? 'A' : e.numero}</span>
+          <span class="ech-label">${e.numero === 0 ? 'Acompte (30%)' : 'Mensualité ' + e.numero}</span>
+          <span class="ech-date">${e.date_echeance ? new Date(e.date_echeance).toLocaleDateString('fr-FR') : '—'}</span>
+          <span class="ech-amount">${(e.montant||0).toLocaleString('fr-FR')} <span style="font-size:11px;opacity:.6">FCFA</span></span>
+          <div class="ech-status">
+            <select onchange="updateEcheance('${e.id}', this.value)">
+              <option value="en_attente" ${e.statut==='en_attente'?'selected':''}>En attente</option>
+              <option value="paye" ${e.statut==='paye'?'selected':''}>✅ Payé</option>
+              <option value="retard" ${e.statut==='retard'?'selected':''}>⚠️ Retard</option>
+            </select>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
+
+    <!-- Notes admin -->
+    <div class="modal-section admin-note">
+      <div class="modal-section-title">Notes internes</div>
+      <textarea id="edit-notes" placeholder="Notes confidentielles (non visibles par le client)…">${r.notes || ''}</textarea>
+    </div>
+  `;
+
+  document.getElementById('modal-actions').innerHTML = `
+    <button class="btn-primary" onclick="saveChanges()">💾 Enregistrer</button>
+    <button class="btn-secondary" onclick="sendMagicLink('${r.email}', '${r.prenom}')">🔑 Envoyer accès client</button>
+    <button class="btn-danger" style="margin-left:auto;" onclick="if(confirm('Supprimer ce dossier ?'))deleteRecord('${r.id}')">Supprimer</button>
+  `;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  currentId = null;
+}
+
+// ══ SAVE CHANGES ══════════════════════════════════════════════════
+async function saveChanges() {
+  const statut = document.getElementById('edit-statut').value;
+  const notes  = document.getElementById('edit-notes').value;
+
+  const { error } = await sb.from('souscriptions')
+    .update({ statut, notes, updated_at: new Date().toISOString() })
+    .eq('id', currentId);
+
+  if (error) { showToast('Erreur : ' + error.message); return; }
+  showToast('✅ Modifications enregistrées');
+  closeModal();
+  loadData();
+}
+
+async function updateEcheance(echId, newStatut) {
+  const updates = { statut: newStatut };
+  if (newStatut === 'paye') updates.date_paiement = new Date().toISOString().split('T')[0];
+
+  const { error } = await sb.from('echeances').update(updates).eq('id', echId);
+  if (error) { showToast('Erreur : ' + error.message); return; }
+
+  // Recalculate montant_paye
+  const r = allData.find(x => x.id === currentId);
+  if (r) {
+    const { data: echs } = await sb.from('echeances').select('*').eq('souscription_id', currentId);
+    const paye = (echs || []).filter(e => e.statut === 'paye').reduce((s,e) => s + e.montant, 0);
+    await sb.from('souscriptions').update({ montant_paye: paye }).eq('id', currentId);
+  }
+  showToast('✅ Échéance mise à jour');
+  loadData();
+}
+
+async function deleteRecord(id) {
+  await sb.from('echeances').delete().eq('souscription_id', id);
+  await sb.from('souscriptions').delete().eq('id', id);
+  closeModal();
+  showToast('🗑️ Dossier supprimé');
+  loadData();
+}
+
+// ══ MAGIC LINK ════════════════════════════════════════════════════
+async function sendMagicLink(email, prenom) {
+  const { error } = await sb.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: window.location.origin + '/mon-compte.html',
+      data: { prenom }
+    }
+  });
+  if (error) { showToast('Erreur : ' + error.message); return; }
+  showToast(`🔑 Lien d'accès envoyé à ${email}`);
+}
+
+// ══ ADD MANUAL ════════════════════════════════════════════════════
+function openAddModal() {
+  document.getElementById('modal-title').textContent = 'Ajouter un souscripteur';
+  document.getElementById('modal-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      ${['prenom:Prénom*','nom:Nom*','email:Email*','whatsapp:WhatsApp*','pays_residence:Pays','objectif:Objectif','nb_parcelles:Nb parcelles','budget:Budget déclaré'].map(f => {
+        const [id,lbl] = f.split(':');
+        return `<div><label style="font-size:12px;color:var(--text-lt);display:block;margin-bottom:4px;">${lbl}</label>
+        <input id="add-${id}" type="text" style="width:100%;border:1.5px solid var(--border);border-radius:4px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;"/></div>`;
+      }).join('')}
+      <div><label style="font-size:12px;color:var(--text-lt);display:block;margin-bottom:4px;">Type paiement</label>
+        <select id="add-type" style="width:100%;border:1.5px solid var(--border);border-radius:4px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;">
+          <option value="echelonne">Échelonné</option><option value="comptant">Comptant</option>
+        </select>
+      </div>
+      <div><label style="font-size:12px;color:var(--text-lt);display:block;margin-bottom:4px;">Statut</label>
+        <select id="add-statut" style="width:100%;border:1.5px solid var(--border);border-radius:4px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;">
+          <option value="en_attente">En attente</option><option value="actif">Actif</option>
+        </select>
+      </div>
+    </div>
+  `;
+  document.getElementById('modal-actions').innerHTML = `
+    <button class="btn-primary" onclick="saveNewRecord()">Créer le dossier</button>
+    <button class="btn-secondary" onclick="closeModal()">Annuler</button>
+  `;
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+async function saveNewRecord() {
+  const g = id => document.getElementById('add-'+id)?.value?.trim() || '';
+  const rec = {
+    prenom: g('prenom'), nom: g('nom'), email: g('email'),
+    whatsapp: g('whatsapp'), pays_residence: g('pays_residence'),
+    objectif: g('objectif'), nb_parcelles: g('nb_parcelles'), budget: g('budget'),
+    type_paiement: g('type'), statut: g('statut'),
+    montant_total: 1500000, montant_paye: 0,
+    created_at: new Date().toISOString(),
+  };
+  if (!rec.prenom || !rec.nom || !rec.email) { showToast('Remplissez prénom, nom et email'); return; }
+  const { data, error } = await sb.from('souscriptions').insert([rec]).select().single();
+  if (error) { showToast('Erreur : ' + error.message); return; }
+  // Create echeances
+  if (rec.type_paiement === 'echelonne') await createEcheances(data.id, new Date());
+  showToast('✅ Dossier créé');
+  closeModal();
+  loadData();
+}
+
+async function createEcheances(souscriptionId, startDate) {
+  const echs = [];
+  const d = new Date(startDate);
+  echs.push({ souscription_id: souscriptionId, numero: 0, montant: 450000, statut: 'en_attente', date_echeance: d.toISOString().split('T')[0] });
+  for (let i = 1; i <= 12; i++) {
+    const dd = new Date(d); dd.setMonth(dd.getMonth() + i);
+    echs.push({ souscription_id: souscriptionId, numero: i, montant: 87500, statut: 'en_attente', date_echeance: dd.toISOString().split('T')[0] });
+  }
+  await sb.from('echeances').insert(echs);
+}
+
+// ══ UTILS ═════════════════════════════════════════════════════════
+function statutLabel(s) {
+  return {en_attente:'En attente', actif:'Actif', solde:'Soldé', caduque:'Caduque'}[s] || s;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>
